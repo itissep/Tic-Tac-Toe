@@ -12,7 +12,7 @@ struct Constant {
         static let background = UIColor(named: "BackgroundColor")
         static let accent = UIColor(named: "AccentColor")
         static let white = UIColor(named: "LightColor")
-        static let gray = UIColor(named: "GrayColor")
+        static let gray = UIColor(named: "GrayColor")?.withAlphaComponent(0.5)
     }
     
     struct Font {
@@ -21,8 +21,8 @@ struct Constant {
         static let capture = UIFont.systemFont(ofSize: 13)
     }
     
-    static let xIcon = UIImage(systemName: "cross.fill")
-    static let oIcon = UIImage(systemName: "smallcircle.filled.circle")
+    static let xIcon = UIImage(named: "Cross") ?? UIImage()
+    static let oIcon = UIImage(named: "Circle") ?? UIImage()
 
     static let hPadding: CGFloat = 16.0
 }

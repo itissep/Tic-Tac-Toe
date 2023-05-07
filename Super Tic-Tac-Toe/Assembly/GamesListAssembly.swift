@@ -8,12 +8,12 @@
 import UIKit
 
 protocol GamesListAssemblyDescription {
-    func createModule() -> UIViewController
+    func createModule(with coordinator: BaseCoordinatorDescription) -> UIViewController
 }
 
 final class GamesListAssembly: GamesListAssemblyDescription {
-    func createModule() -> UIViewController {
-        let viewModel = GamesListViewModel()
+    func createModule(with coordinator: BaseCoordinatorDescription) -> UIViewController {
+        let viewModel = GamesListViewModel(coordinator: coordinator)
         let viewController = GamesListViewControllerr(viewModel: viewModel)
         return viewController
     }

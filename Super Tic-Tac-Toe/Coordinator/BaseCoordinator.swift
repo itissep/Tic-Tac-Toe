@@ -32,12 +32,15 @@ class BaseCoordinator: NSObject, BaseCoordinatorDescription {
         goToGamesList()
     }
     
-    func goToGame(with id: String) {
-        //
+    func goToGame(with gameId: String) {
+        let viewController = gameAssembly.createModule(with: gameId)
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     private func goToGamesList() {
-        let viewController = gamesListAssembly.createModule()
+        let viewController = gamesListAssembly.createModule(with: self)
         navigationController.pushViewController(viewController, animated: true)
     }
+    
+    
 }

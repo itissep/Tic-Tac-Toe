@@ -11,12 +11,12 @@ final class GameCellModel: NSObject {
     
     let title: String
     let progress: Int
-    let currentPlayer: Int
+    let currentPlayer: Player
     let id: String
     let lastActivity: Date
     let isFinished: Bool
     
-    init(title: String, progress: Int, currentPlayer: Int, id: String, lastActivity: Date, isFinished: Bool) {
+    init(title: String, progress: Int, currentPlayer: Player, id: String, lastActivity: Date, isFinished: Bool) {
         self.title = title
         self.progress = progress
         self.currentPlayer = currentPlayer

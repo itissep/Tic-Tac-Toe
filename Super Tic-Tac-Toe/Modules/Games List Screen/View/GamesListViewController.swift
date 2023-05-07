@@ -13,12 +13,13 @@ class GamesListViewControllerr: UIViewController {
     private lazy var newGameButton = UIButton()
     private lazy var emptyLabel = UILabel()
     
+    private var eventSubject = PassthroughSubject<GameListEvent, Never>()
+    private var subscriptions = Set<AnyCancellable>()
+    private let viewModel: GamesListViewModelDescription
+    
     // MARK: - Life Cycle
     
-    private var subscriptions = Set<AnyCancellable>()
-    private let viewModel: GamesListViewModel
-    
-    init(viewModel: GamesListViewModel) {
+    init(viewModel: GamesListViewModelDescription) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -32,6 +33,16 @@ class GamesListViewControllerr: UIViewController {
         
         setupBinding()
         generalSetup()
+        eventSubject.send(.update)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.largeTitleTextAttributes = [
+            .foregroundColor: Constant.Color.white ?? UIColor.white,
+            .font: UIFont.systemFont(ofSize: 35, weight: .black)
+        ]
     }
     
     override func viewDidLayoutSubviews() {
@@ -45,7 +56,8 @@ class GamesListViewControllerr: UIViewController {
     // MARK: - Binding
     
     private func setupBinding() {
-        viewModel.$gamesCellModels
+        viewModel.attachEventListener(with: eventSubject.eraseToAnyPublisher())
+        viewModel.gamesCellsPublisher
             .sink {[weak self] _ in
                 self?.tableView.reloadData()
             }
@@ -58,10 +70,6 @@ class GamesListViewControllerr: UIViewController {
         view.backgroundColor = Constant.Color.background
         title = "My Games"
         navigationController?.navigationBar.prefersLargeTitles = true
-        #warning("TODO: color of title")
-        navigationController?.navigationBar.titleTextAttributes = [
-            .foregroundColor: UIColor.red
-        ]
 
     }
     
@@ -107,7 +115,7 @@ class GamesListViewControllerr: UIViewController {
         newGameButton.setTitle("NEW GAME", for: .normal)
         newGameButton.setTitleColor(Constant.Color.background, for: .normal)
         
-        newGameButton.backgroundColor = Constant.Color.accent
+        newGameButton.backgroundColor = Constant.Color.white
         newGameButton.layer.cornerRadius = 16
         newGameButton.layer.masksToBounds = true
         
@@ -125,20 +133,24 @@ class GamesListViewControllerr: UIViewController {
     // MARK: - Selectors
     @objc
     private func newGameButtonPressed() {
-        viewModel.createNewGame()
+        eventSubject.send(.createNew)
     }
 }
 
 // MARK: - UITableViewDelegate
 
 extension GamesListViewControllerr: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        eventSubject.send(.select(indexPath: indexPath))
+    }
+    
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         true
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            viewModel.deleteGame(at: indexPath)
+            eventSubject.send(.delete(indexPath: indexPath))
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }

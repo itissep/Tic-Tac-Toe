@@ -13,7 +13,7 @@ final class GameTableCell: UITableViewCell {
     private lazy var titleLabel = UILabel()
     private lazy var dateLabel = UILabel()
     private lazy var progressLabel = UILabel()
-    private lazy var currentPlayerView = UIView()
+    private lazy var currentPlayerView = ImageViewWithInsets(with: 10)
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -28,8 +28,8 @@ final class GameTableCell: UITableViewCell {
         contentView.addSubviews([titleLabel, dateLabel, progressLabel, currentPlayerView])
         contentView.backgroundColor = Constant.Color.background
         
-        currentPlayerView.backgroundColor = Constant.Color.accent
-        currentPlayerView.layer.cornerRadius = 50 / 2
+        currentPlayerView.backgroundColor = Constant.Color.gray
+        currentPlayerView.layer.cornerRadius = 16
         currentPlayerView.layer.masksToBounds = true
         
         titleLabel.font = UIFont.systemFont(ofSize: 35, weight: .black)
@@ -39,34 +39,36 @@ final class GameTableCell: UITableViewCell {
         progressLabel.textColor = Constant.Color.white
         
         NSLayoutConstraint.activate([
-            currentPlayerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constant.hPadding),
+            currentPlayerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constant.hPadding),
             currentPlayerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            currentPlayerView.widthAnchor.constraint(equalToConstant: 50),
-            currentPlayerView.heightAnchor.constraint(equalToConstant: 50)
+            currentPlayerView.widthAnchor.constraint(equalToConstant: 75),
+            currentPlayerView.heightAnchor.constraint(equalToConstant: 75)
         ])
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.hPadding),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constant.hPadding),
-            titleLabel.trailingAnchor.constraint(equalTo: currentPlayerView.leadingAnchor, constant: Constant.hPadding),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constant.hPadding),
+            titleLabel.leadingAnchor.constraint(equalTo: currentPlayerView.trailingAnchor, constant: Constant.hPadding),
         ])
         
         NSLayoutConstraint.activate([
-            progressLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constant.hPadding),
-            progressLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constant.hPadding),
+            progressLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constant.hPadding),
+            progressLabel.leadingAnchor.constraint(equalTo: currentPlayerView.trailingAnchor, constant: Constant.hPadding),
             progressLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
         ])
         
         NSLayoutConstraint.activate([
-            dateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constant.hPadding),
-            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constant.hPadding),
+            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constant.hPadding),
+            dateLabel.leadingAnchor.constraint(equalTo: currentPlayerView.trailingAnchor, constant: Constant.hPadding),
             dateLabel.topAnchor.constraint(equalTo: progressLabel.bottomAnchor),
             dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constant.hPadding)
         ])
     }
     
-    private func configureCurrentPlayer(with value: Int) {
-        
+    private func configureCurrentPlayer(with player: Player) {
+        let image = player.getImage()
+        currentPlayerView.imageView.image = image
+        currentPlayerView.imageView.contentMode = .scaleAspectFit
     }
     
     func configure(with cellModel: GameCellModel) {
@@ -79,6 +81,6 @@ final class GameTableCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
+        currentPlayerView.imageView.image = nil
     }
 }

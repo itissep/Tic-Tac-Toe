@@ -5,17 +5,33 @@
 //  Created by Someone on 04.05.2023.
 //
 
-import Foundation
+import UIKit
 
 struct MockData {
-    static let cellModel = GameCellModel(title: "Something", progress: 12, currentPlayer: 1, id: "id", lastActivity: Date.now, isFinished: false)
+    static let cellModel = GameCellModel(title: "Something", progress: 12, currentPlayer: .O, id: "id", lastActivity: Date.now, isFinished: false)
     static let cells = [cellModel, cellModel, cellModel]
+    
+    static let game = GameModel(title: "Game 1", numberOfMoves: 2, board: [[.O]], currentPlayer: .O, isFinished: false)
 }
 
 
 enum Player {
     case X
     case O
+    
+    func enemy() -> Player {
+        switch self {
+        case .O: return .X
+        case .X: return .O
+        }
+    }
+    
+    func getImage() -> UIImage {
+        switch self {
+        case .O: return Constant.oIcon
+        case .X: return Constant.xIcon
+        }
+    }
 }
 
 enum BoardType {
@@ -83,6 +99,8 @@ class Board {
 
 struct GameModel {
     let title: String
-    let step: Int
-    let board: Board
+    let numberOfMoves: Int
+    let board: [[Player]]
+    let currentPlayer: Player
+    let isFinished: Bool
 }
