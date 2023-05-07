@@ -9,11 +9,19 @@ import UIKit
 import Combine
 
 final class GameViewController: UIViewController {
-    lazy var titleLabel = UILabel()
-    lazy var movesLabel = UILabel()
-    lazy var currentPlayerLabel = UILabel()
-    lazy var collectionView = UIView()
+    private lazy var titleLabel = UILabel()
+    private lazy var currentPlayerImageView = ImageViewWithInsets(with: 10)
+    private lazy var currentPlayerLabel = UILabel()
+    private var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 2
+        layout.minimumInteritemSpacing = 2
+        
+        return UICollectionView(frame: .zero, collectionViewLayout: layout)
+    }()
     
+    private var eventSubject = PassthroughSubject<GameEvent, Never>()
     private let viewModel: GameViewModel
     private var subscriptions = Set<AnyCancellable>()
     
@@ -30,41 +38,27 @@ final class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         generalSetup()
         setupBinding()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        navigationController?.navigationBar.largeTitleTextAttributes = [
-            .foregroundColor: Constant.Color.accent ?? UIColor.white,
-            .font: UIFont.systemFont(ofSize: 35, weight: .black)
-        ]
+        eventSubject.send(.fetchGame)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        configureLabels()
         configureCollectionView()
+        configureLabels()
     }
     
     // MARK: - Binding
     
     private func setupBinding() {
+        viewModel.attachEventListener(with: eventSubject.eraseToAnyPublisher())
         viewModel.$gameTitle
             .receive(on: DispatchQueue.main)
             .map({ $0?.uppercased() })
             .assign(to: \.title, on: self)
-            .store(in: &subscriptions)
-        
-        viewModel.$movesNumber
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] movesNumber in
-                guard let movesNumber else { return }
-                self?.configureMovesLabel(with: movesNumber)
-            }
             .store(in: &subscriptions)
         
         viewModel.$currentPlayer
@@ -76,54 +70,57 @@ final class GameViewController: UIViewController {
             .store(in: &subscriptions)
     }
     
+    private func configureCurrentPlayer(with player: Player) {
+        let image = player.getImage()
+        currentPlayerImageView.imageView.image = image
+    }
+    
     // MARK: - UI
     
-    private func configureMovesLabel(with number: Int) {
-        movesLabel.text = "Moves: \(number)"
-    }
-    
-    private func configureCurrentPlayer(with player: Player) {
-        
-    }
-    
     private func generalSetup() {
+        title = "GAME"
         view.backgroundColor = Constant.Color.background
     }
     
     private func configureLabels() {
-        titleLabel.font = UIFont.systemFont(ofSize: 35, weight: .black)
-        titleLabel.textColor = Constant.Color.accent
+        currentPlayerLabel.textColor = Constant.Color.white
+        currentPlayerLabel.numberOfLines = 0
+        currentPlayerLabel.text = "Current\nplayer".uppercased()
+        currentPlayerLabel.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        currentPlayerLabel.textAlignment = .center
         
-        movesLabel.textColor = Constant.Color.white
-        
-        currentPlayerLabel.textColor = Constant.Color.gray
-        currentPlayerLabel.text = "Current player: "
-        
-        view.addSubviews([titleLabel, movesLabel, currentPlayerLabel])
+        currentPlayerImageView.backgroundColor = Constant.Color.gray
+        currentPlayerImageView.layer.cornerRadius = 16
+        currentPlayerImageView.layer.masksToBounds = true
+    
+        view.addSubviews([titleLabel, currentPlayerLabel, currentPlayerImageView])
+    
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constant.hPadding),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constant.hPadding),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constant.hPadding),
+            currentPlayerImageView.widthAnchor.constraint(equalToConstant: 75),
+            currentPlayerImageView.heightAnchor.constraint(equalToConstant: 75),
+            currentPlayerImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            currentPlayerImageView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: Constant.hPadding)
         ])
         
         NSLayoutConstraint.activate([
-            movesLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constant.hPadding),
-            movesLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constant.hPadding),
-            movesLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constant.hPadding),
-        ])
-        
-        NSLayoutConstraint.activate([
-            currentPlayerLabel.topAnchor.constraint(equalTo: movesLabel.bottomAnchor, constant: Constant.hPadding),
+            currentPlayerLabel.topAnchor.constraint(equalTo: currentPlayerImageView.bottomAnchor, constant: 5),
             currentPlayerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constant.hPadding),
+            currentPlayerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             currentPlayerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constant.hPadding),
         ])
     }
-
+    
     
     private func configureCollectionView() {
+        collectionView.register(GameCollectionCell.self,
+                                forCellWithReuseIdentifier: GameCollectionCell.identifier)
+        
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
+        collectionView.backgroundColor = Constant.Color.background
         collectionView.layer.cornerRadius = 16
         collectionView.layer.masksToBounds = true
-        collectionView.backgroundColor = Constant.Color.gray
         
         let side = view.frame.width - 2 * Constant.hPadding
         
@@ -132,7 +129,46 @@ final class GameViewController: UIViewController {
             collectionView.widthAnchor.constraint(equalToConstant: side),
             collectionView.heightAnchor.constraint(equalToConstant: side),
             collectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constant.hPadding)
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150)
         ])
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension GameViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        eventSubject.send(.moveWasMade(at: indexPath))
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+
+extension GameViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        9
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GameCollectionCell.identifier, for: indexPath)
+        return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension GameViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                  layout collectionViewLayout: UICollectionViewLayout,
+                  insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                   layout collectionViewLayout: UICollectionViewLayout,
+                   sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let layout = collectionViewLayout as! UICollectionViewFlowLayout
+        let widthPerItem = collectionView.frame.width / 3 - layout.minimumInteritemSpacing
+        return CGSize(width: widthPerItem, height: widthPerItem)
     }
 }

@@ -14,7 +14,7 @@ protocol GamesListAssemblyDescription {
 final class GamesListAssembly: GamesListAssemblyDescription {
     func createModule(with coordinator: BaseCoordinatorDescription) -> UIViewController {
         let viewModel = GamesListViewModel(coordinator: coordinator)
-        let viewController = GamesListViewControllerr(viewModel: viewModel)
+        let viewController = GamesListViewController(viewModel: viewModel)
         return viewController
     }
 }

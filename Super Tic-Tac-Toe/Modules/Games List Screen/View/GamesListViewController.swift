@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class GamesListViewControllerr: UIViewController {
+final class GamesListViewController: UIViewController {
     private lazy var tableView = UITableView()
     private lazy var newGameButton = UIButton()
     private lazy var emptyLabel = UILabel()
@@ -139,7 +139,7 @@ class GamesListViewControllerr: UIViewController {
 
 // MARK: - UITableViewDelegate
 
-extension GamesListViewControllerr: UITableViewDelegate {
+extension GamesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         eventSubject.send(.select(indexPath: indexPath))
     }
@@ -158,7 +158,7 @@ extension GamesListViewControllerr: UITableViewDelegate {
 
 // MARK: - UITableViewDataSource
 
-extension GamesListViewControllerr: UITableViewDataSource {
+extension GamesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.gamesCellModels.count
     }
