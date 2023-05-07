@@ -12,7 +12,6 @@ final class GameTableCell: UITableViewCell {
     
     private lazy var titleLabel = UILabel()
     private lazy var dateLabel = UILabel()
-    private lazy var progressLabel = UILabel()
     private lazy var currentPlayerView = ImageViewWithInsets(with: 10)
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -24,8 +23,20 @@ final class GameTableCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with cellModel: GameCellModel) {
+        let time = cellModel.lastActivity.timeToShow() ?? "maybe today"
+        titleLabel.text = cellModel.title.uppercased()
+        dateLabel.text = time
+        configureCurrentPlayer(with: cellModel.currentPlayer)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        currentPlayerView.imageView.image = nil
+    }
+    
     private func layout() {
-        contentView.addSubviews([titleLabel, dateLabel, progressLabel, currentPlayerView])
+        contentView.addSubviews([titleLabel, dateLabel, currentPlayerView])
         contentView.backgroundColor = Constant.Color.background
         
         currentPlayerView.backgroundColor = Constant.Color.gray
@@ -36,11 +47,12 @@ final class GameTableCell: UITableViewCell {
         titleLabel.textColor = Constant.Color.accent
         
         dateLabel.textColor = Constant.Color.gray
-        progressLabel.textColor = Constant.Color.white
+        dateLabel.textColor = Constant.Color.white
         
         NSLayoutConstraint.activate([
             currentPlayerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constant.hPadding),
-            currentPlayerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            currentPlayerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.hPadding),
+            currentPlayerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constant.hPadding),
             currentPlayerView.widthAnchor.constraint(equalToConstant: 75),
             currentPlayerView.heightAnchor.constraint(equalToConstant: 75)
         ])
@@ -52,16 +64,9 @@ final class GameTableCell: UITableViewCell {
         ])
         
         NSLayoutConstraint.activate([
-            progressLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constant.hPadding),
-            progressLabel.leadingAnchor.constraint(equalTo: currentPlayerView.trailingAnchor, constant: Constant.hPadding),
-            progressLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-        ])
-        
-        NSLayoutConstraint.activate([
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constant.hPadding),
             dateLabel.leadingAnchor.constraint(equalTo: currentPlayerView.trailingAnchor, constant: Constant.hPadding),
-            dateLabel.topAnchor.constraint(equalTo: progressLabel.bottomAnchor),
-            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constant.hPadding)
+            dateLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
         ])
     }
     
@@ -69,18 +74,5 @@ final class GameTableCell: UITableViewCell {
         let image = player.getImage()
         currentPlayerView.imageView.image = image
         currentPlayerView.imageView.contentMode = .scaleAspectFit
-    }
-    
-    func configure(with cellModel: GameCellModel) {
-        let time = cellModel.lastActivity.timeToShow() ?? "maybe today"
-        titleLabel.text = cellModel.title.uppercased()
-        dateLabel.text = time
-        progressLabel.text = "Moves: \(cellModel.progress)"
-        configureCurrentPlayer(with: cellModel.currentPlayer)
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        currentPlayerView.imageView.image = nil
     }
 }

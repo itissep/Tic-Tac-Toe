@@ -8,7 +8,7 @@
 import UIKit
 #warning("TODO: get rid of moves everywhere")
 struct MockData {
-    static let cellModel = GameCellModel(title: "Something", progress: 12, currentPlayer: .O, id: "id", lastActivity: Date.now, isFinished: false)
+    static let cellModel = GameCellModel(title: "Something", currentPlayer: .O, id: "id", lastActivity: Date.now, isFinished: false)
     static let cells = [cellModel, cellModel, cellModel]
     
     static let game = GameModel(title: "Game 1", board: [[nil,nil,nil],[nil,nil,nil],[nil,nil,nil]],lastMove: Move(location: (0,0), player: .X), isFinished: false)
