@@ -36,7 +36,7 @@
 		2CCF1A322A058C430063A998 /* UIView .swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCF1A312A058C430063A998 /* UIView .swift */; };
 		2CEEC7542A07EB8300902753 /* BoardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7532A07EB8300902753 /* BoardManager.swift */; };
 		2CEEC7562A07EC2100902753 /* Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7552A07EC2100902753 /* Move.swift */; };
-		2CEEC7582A07EC3900902753 /* WinningDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7572A07EC3900902753 /* WinningDirection.swift */; };
+		2CEEC7582A07EC3900902753 /* GameResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7572A07EC3900902753 /* GameResult.swift */; };
 		2CEEC75A2A07EC4900902753 /* BoardEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7592A07EC4900902753 /* BoardEvent.swift */; };
 		2CEEC75C2A07EC6100902753 /* GameSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC75B2A07EC6100902753 /* GameSavingService.swift */; };
 /* End PBXBuildFile section */
@@ -73,7 +73,7 @@
 		2CCF1A312A058C430063A998 /* UIView .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView .swift"; sourceTree = "<group>"; };
 		2CEEC7532A07EB8300902753 /* BoardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardManager.swift; sourceTree = "<group>"; };
 		2CEEC7552A07EC2100902753 /* Move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Move.swift; sourceTree = "<group>"; };
-		2CEEC7572A07EC3900902753 /* WinningDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinningDirection.swift; sourceTree = "<group>"; };
+		2CEEC7572A07EC3900902753 /* GameResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameResult.swift; sourceTree = "<group>"; };
 		2CEEC7592A07EC4900902753 /* BoardEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardEvent.swift; sourceTree = "<group>"; };
 		2CEEC75B2A07EC6100902753 /* GameSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSavingService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -284,7 +284,7 @@
 				2CEEC7532A07EB8300902753 /* BoardManager.swift */,
 				2CEEC7552A07EC2100902753 /* Move.swift */,
 				2CEEC7592A07EC4900902753 /* BoardEvent.swift */,
-				2CEEC7572A07EC3900902753 /* WinningDirection.swift */,
+				2CEEC7572A07EC3900902753 /* GameResult.swift */,
 			);
 			path = BoardManager;
 			sourceTree = "<group>";
@@ -363,7 +363,7 @@
 				2CEEC7562A07EC2100902753 /* Move.swift in Sources */,
 				2CEEC7542A07EB8300902753 /* BoardManager.swift in Sources */,
 				2CB2E0582A06ED9600719601 /* GameViewModel.swift in Sources */,
-				2CEEC7582A07EC3900902753 /* WinningDirection.swift in Sources */,
+				2CEEC7582A07EC3900902753 /* GameResult.swift in Sources */,
 				2C051E212A041C7C001E42BE /* Constants.swift in Sources */,
 				2CB2E06D2A07DA1900719601 /* TitleGenerator.swift in Sources */,
 				2CB2E0652A07A69900719601 /* GameEvent.swift in Sources */,

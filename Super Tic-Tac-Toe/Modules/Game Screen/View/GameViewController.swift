@@ -12,6 +12,8 @@ final class GameViewController: UIViewController {
     private lazy var titleLabel = UILabel()
     private lazy var currentPlayerImageView = ImageViewWithInsets(with: 10)
     private lazy var currentPlayerLabel = UILabel()
+    private lazy var gameResultView = UIView()
+    
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -20,6 +22,8 @@ final class GameViewController: UIViewController {
         
         return UICollectionView(frame: .zero, collectionViewLayout: layout)
     }()
+    
+    private var cellSize: CGFloat?
     
     private var eventSubject = PassthroughSubject<GameEvent, Never>()
     private let viewModel: GameViewModel
@@ -65,7 +69,7 @@ final class GameViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] player in
                 guard let player else { return }
-                self?.configureCurrentPlayer(with: player)
+                self?.configurePlayer(with: player)
             }
             .store(in: &subscriptions)
         
@@ -75,9 +79,16 @@ final class GameViewController: UIViewController {
                 self?.collectionView.reloadData()
             }
             .store(in: &subscriptions)
+        
+        viewModel.$gameResult
+            .sink { [weak self] gameResult in
+                guard let gameResult else { return }
+                self?.configureGameResult(with: gameResult)
+            }
+            .store(in: &subscriptions)
     }
     
-    private func configureCurrentPlayer(with player: Player) {
+    private func configurePlayer(with player: Player) {
         let image = player.getImage()
         currentPlayerImageView.imageView.image = image
     }
@@ -92,7 +103,7 @@ final class GameViewController: UIViewController {
     private func configureLabels() {
         currentPlayerLabel.textColor = Constant.Color.white
         currentPlayerLabel.numberOfLines = 0
-        currentPlayerLabel.text = "Current\nplayer".uppercased()
+        currentPlayerLabel.text = "player".uppercased()
         currentPlayerLabel.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         currentPlayerLabel.textAlignment = .center
         
@@ -139,6 +150,83 @@ final class GameViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150)
         ])
     }
+    
+    private func configureGameResult(with result: GameResult) {
+        gameResultView.layer.cornerRadius = 16
+        gameResultView.layer.masksToBounds = true
+        gameResultView.backgroundColor = Constant.Color.background?.withAlphaComponent(0.5)
+        gameResultView.layer.zPosition = 100
+        view.addSubviews([gameResultView])
+        
+        NSLayoutConstraint.activate([
+            gameResultView.widthAnchor.constraint(equalTo: collectionView.widthAnchor),
+            gameResultView.heightAnchor.constraint(equalTo: collectionView.heightAnchor),
+            gameResultView.topAnchor.constraint(equalTo: collectionView.topAnchor),
+            gameResultView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
+            gameResultView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
+            gameResultView.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor),
+        ])
+        
+        let player = viewModel.currentPlayer ?? .X
+        configureGameResultLabel(with: result, player: player)
+    }
+    
+    private func configureGameResultLabel(with result: GameResult, player: Player) {
+        let color = player.getColor()
+        let view = UIView()
+        view.layer.borderWidth = 10
+        view.layer.borderColor = color.cgColor
+        view.layer.cornerRadius = 16
+        view.layer.masksToBounds = true
+        
+        let label = UILabel()
+        label.text = result == .draw ? "DRAW" : "WIN WIN WIN"
+        label.font = UIFont.systemFont(ofSize: 45, weight: .black)
+        label.textColor = color
+
+        gameResultView.addSubviews([view])
+        view.addSubviews([label])
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: gameResultView.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: gameResultView.centerYAnchor),
+            
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            label.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10),
+            
+        ])
+        transformView(view, for: result)
+    }
+    
+    private func transformView(_ view: UIView, for result: GameResult) {
+        switch result {
+        case .row(let number):
+            view.transform = CGAffineTransform(translationX: 0, y: getOffset(for: number))
+        case .column(let number):
+            var transform = CGAffineTransform.identity
+            transform = transform.translatedBy(x: getOffset(for: number), y: 0)
+            transform = transform.rotated(by: -(.pi / 2))
+            view.transform = transform
+        case .rightDiagonal:
+            view.transform = CGAffineTransform(rotationAngle: -(.pi / 4))
+        case .leftDiagonal:
+            view.transform = CGAffineTransform(rotationAngle: (.pi / 4))
+        case .draw:
+            view.transform = CGAffineTransform(rotationAngle: -(.pi / 6))
+        }
+    }
+    
+    private func getOffset(for number: Int) -> CGFloat {
+        switch number {
+        case 0:
+            return -(cellSize ?? 0.0)
+        case 2:
+            return cellSize ?? 0.0
+        default:
+            return 0.0
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -181,6 +269,7 @@ extension GameViewController: UICollectionViewDelegateFlowLayout {
                    sizeForItemAt indexPath: IndexPath) -> CGSize {
         let layout = collectionViewLayout as! UICollectionViewFlowLayout
         let widthPerItem = collectionView.frame.width / 3 - layout.minimumInteritemSpacing
+        self.cellSize = widthPerItem
         return CGSize(width: widthPerItem, height: widthPerItem)
     }
 }

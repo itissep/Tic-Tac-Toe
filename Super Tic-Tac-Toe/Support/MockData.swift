@@ -38,6 +38,13 @@ enum Player {
         case .X: return Constant.xIcon
         }
     }
+    
+    func getColor() -> UIColor {
+        switch self {
+        case .O: return Constant.Color.white ?? .white
+        case .X: return Constant.Color.accent ?? .white
+        }
+    }
 }
 
 enum BoardType {

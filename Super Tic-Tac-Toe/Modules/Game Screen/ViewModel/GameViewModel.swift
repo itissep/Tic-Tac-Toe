@@ -13,6 +13,7 @@ final class GameViewModel: NSObject {
     @Published var movesNumber: Int?
     @Published var board: [[Player?]]?
     @Published var currentPlayer: Player?
+    @Published var gameResult: GameResult?
     
     @Published var cellModels: [Player?] = []
     
@@ -52,11 +53,6 @@ final class GameViewModel: NSObject {
         boardManager.eventPublisher
             .sink { [weak self] event in
                 switch event {
-                case .gameFinishedWithDraw:
-                    self?.isOn = false
-                    print("DRAW")
-                    #warning("TODO: draw view")
-                    break
                 case .updateWith(let newBoard):
                     self?.configureCells(with: newBoard)
                 case .newGame(let title, let board):
@@ -70,12 +66,9 @@ final class GameViewModel: NSObject {
                 case .gameFetched(let board, let player):
                     self?.configureCells(with: board)
                     self?.currentPlayer = player
-                case .gameFinishedWithWinner(_, let direction):
-                    print(direction)
+                case .gameFinished(let result):
                     self?.isOn = false
-                    print("WIN")
-                    #warning("TODO: winning view")
-                    break
+                    self?.gameResult = result
                 case .changePlayer:
                     self?.currentPlayer = self?.currentPlayer?.enemy()
                     
@@ -98,9 +91,5 @@ final class GameViewModel: NSObject {
             }
         }
         cellModels = cells
-    }
-    
-    private func gameWasEnded() {
-        
     }
 }

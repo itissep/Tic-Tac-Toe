@@ -58,9 +58,9 @@ final class BoardManager {
         placeMove(newMove)
         
         if let winningDerection = isWinningMove() {
-            eventPublisher.send(.gameFinishedWithWinner(newMove.player, winningDerection))
+            eventPublisher.send(.gameFinished(winningDerection))
         } else if emptyPlaces == 0 {
-            eventPublisher.send(.gameFinishedWithDraw)
+            eventPublisher.send(.gameFinished(.draw))
         } else {
             eventPublisher.send(.changePlayer)
         }
@@ -114,12 +114,12 @@ final class BoardManager {
         emptyPlaces = count
     }
     
-    private func isWinningMove() -> WinningDirection? {
+    private func isWinningMove() -> GameResult? {
         let results = [checkColumn(), checkRow(), checkDiagonals()]
         return results.first(where:{ $0 != nil }) ?? nil
     }
     
-    private func checkColumn() -> WinningDirection? {
+    private func checkColumn() -> GameResult? {
         guard let lastMove, let items else { return nil }
         let player = lastMove.player
         let x = lastMove.location.x
@@ -132,7 +132,7 @@ final class BoardManager {
         }
     }
     
-    private func checkRow() -> WinningDirection? {
+    private func checkRow() -> GameResult? {
         guard let lastMove, let items else { return nil }
         let player = lastMove.player
         let y = lastMove.location.y
@@ -145,7 +145,7 @@ final class BoardManager {
         }
     }
     
-    private func checkDiagonals() -> WinningDirection? {
+    private func checkDiagonals() -> GameResult? {
         guard let lastMove, let items else { return nil }
         let player = lastMove.player
         let leftResult = items[0][0] == player && items[1][1] == player && items[2][2] == player

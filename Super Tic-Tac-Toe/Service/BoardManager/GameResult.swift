@@ -7,9 +7,10 @@
 
 import Foundation
 
-enum WinningDirection {
+enum GameResult: Equatable {
     case row(Int)
     case column(Int)
     case rightDiagonal
     case leftDiagonal
+    case draw
 }

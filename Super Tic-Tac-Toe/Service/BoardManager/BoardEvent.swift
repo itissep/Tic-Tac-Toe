@@ -11,8 +11,7 @@ enum BoardEvent {
     case newGame(String,[[Player?]])
     case gameFetched([[Player?]], Player)
     case placeIsTaken
-    case gameFinishedWithDraw
-    case gameFinishedWithWinner(Player, WinningDirection)
+    case gameFinished(GameResult)
     case updateWith([[Player?]])
     case error
     case changePlayer
