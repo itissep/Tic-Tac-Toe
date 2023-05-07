@@ -22,7 +22,8 @@ final class GameCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setImage(_ image: UIImage) {
+    func setImage(_ image: UIImage?) {
+        guard image != nil else { return }
         iconImageView.imageView.image = image
     }
     
@@ -35,5 +36,10 @@ final class GameCollectionCell: UICollectionViewCell {
             iconImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             iconImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        iconImageView.imageView.image = nil
     }
 }

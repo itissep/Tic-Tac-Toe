@@ -6,14 +6,20 @@
 //
 
 import UIKit
-
+#warning("TODO: get rid of moves everywhere")
 struct MockData {
     static let cellModel = GameCellModel(title: "Something", progress: 12, currentPlayer: .O, id: "id", lastActivity: Date.now, isFinished: false)
     static let cells = [cellModel, cellModel, cellModel]
     
-    static let game = GameModel(title: "Game 1", numberOfMoves: 2, board: [[.O]], currentPlayer: .O, isFinished: false)
+    static let game = GameModel(title: "Game 1", board: [[nil,nil,nil],[nil,nil,nil],[nil,nil,nil]],lastMove: Move(location: (0,0), player: .X), isFinished: false)
 }
 
+struct GameModel {
+    let title: String
+    let board: [[Player?]]
+    let lastMove: Move
+    let isFinished: Bool
+}
 
 enum Player {
     case X
@@ -61,46 +67,38 @@ class Box {
     }
 }
 
-class Board {
-    var localBoxes: [[Player?]] = []
-    var globalBoxes: [[Player?]] = []
-    
-    func createNew() {
-        var newBoxes = [[Player?]]()
-        for x in 0...9 {
-            for y in 0...9 {
-                newBoxes[x][y] = nil
-            }
-        }
-        localBoxes = newBoxes
-    }
-    
-    func moveAt(x: Int, y: Int, player: Player, board: BoardType) {
-        if board == .Global {
-            globalBoxes[x][y] = player
-        } else {
-            localBoxes[x][y] = player
-        }
-    }
-    
-    func checkLocalBoard(x: Int, y: Int) {
-        
-    }
-    
-    func checkGlobalBoard() {
-        
-    }
-    
-    func checkGame() {
-        
-    }
-    
-}
-
-struct GameModel {
-    let title: String
-    let numberOfMoves: Int
-    let board: [[Player]]
-    let currentPlayer: Player
-    let isFinished: Bool
-}
+//class Board {
+//    var localBoxes: [[Player?]] = []
+//    var globalBoxes: [[Player?]] = []
+//    
+//    func createNew() {
+//        var newBoxes = [[Player?]]()
+//        for x in 0...9 {
+//            for y in 0...9 {
+//                newBoxes[x][y] = nil
+//            }
+//        }
+//        localBoxes = newBoxes
+//    }
+//    
+//    func moveAt(x: Int, y: Int, player: Player, board: BoardType) {
+//        if board == .Global {
+//            globalBoxes[x][y] = player
+//        } else {
+//            localBoxes[x][y] = player
+//        }
+//    }
+//    
+//    func checkLocalBoard(x: Int, y: Int) {
+//        
+//    }
+//    
+//    func checkGlobalBoard() {
+//        
+//    }
+//    
+//    func checkGame() {
+//        
+//    }
+//    
+//}

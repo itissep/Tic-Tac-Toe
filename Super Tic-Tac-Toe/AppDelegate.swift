@@ -12,7 +12,7 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var coordinator: BaseCoordinatorDescription?
-    #warning("TODO: add DI")
+    var serviceAssembly: ServiceAssemblyDescription = ServiceAssembly()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow()
@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navController = UINavigationController()
         coordinator = BaseCoordinator(navigationController: navController,
                                       gamesListAssembly: GamesListAssembly(),
-                                      gameAssembly: GameAssembly())
+                                      gameAssembly: GameAssembly(serviceAssembly: serviceAssembly))
         coordinator?.start()
         
         window?.rootViewController = navController

@@ -12,9 +12,16 @@ protocol GameAssemblyDescription {
 }
 
 final class GameAssembly: GameAssemblyDescription {
+    private let serviceAssembly: ServiceAssemblyDescription
+    
+    init(serviceAssembly: ServiceAssemblyDescription) {
+        self.serviceAssembly = serviceAssembly
+    }
+    
     func createModule(with gameId: String)
     -> UIViewController {
-        let viewModel = GameViewModel(gameId: gameId)
+        let gameService = serviceAssembly.gameService
+        let viewModel = GameViewModel(gameId: gameId, gameService: gameService)
         let viewController = GameViewController(viewModel: viewModel)
         return viewController
     }

@@ -31,7 +31,14 @@
 		2CB2E0622A07A32F00719601 /* GameListEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB2E0612A07A32F00719601 /* GameListEvent.swift */; };
 		2CB2E0652A07A69900719601 /* GameEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB2E0642A07A69900719601 /* GameEvent.swift */; };
 		2CB2E0672A07A94D00719601 /* GameCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB2E0662A07A94D00719601 /* GameCollectionCell.swift */; };
+		2CB2E06B2A07B72B00719601 /* ServiceAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB2E06A2A07B72B00719601 /* ServiceAssembly.swift */; };
+		2CB2E06D2A07DA1900719601 /* TitleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB2E06C2A07DA1900719601 /* TitleGenerator.swift */; };
 		2CCF1A322A058C430063A998 /* UIView .swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCF1A312A058C430063A998 /* UIView .swift */; };
+		2CEEC7542A07EB8300902753 /* BoardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7532A07EB8300902753 /* BoardManager.swift */; };
+		2CEEC7562A07EC2100902753 /* Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7552A07EC2100902753 /* Move.swift */; };
+		2CEEC7582A07EC3900902753 /* WinningDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7572A07EC3900902753 /* WinningDirection.swift */; };
+		2CEEC75A2A07EC4900902753 /* BoardEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC7592A07EC4900902753 /* BoardEvent.swift */; };
+		2CEEC75C2A07EC6100902753 /* GameSavingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEC75B2A07EC6100902753 /* GameSavingService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,7 +68,14 @@
 		2CB2E0612A07A32F00719601 /* GameListEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListEvent.swift; sourceTree = "<group>"; };
 		2CB2E0642A07A69900719601 /* GameEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEvent.swift; sourceTree = "<group>"; };
 		2CB2E0662A07A94D00719601 /* GameCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCollectionCell.swift; sourceTree = "<group>"; };
+		2CB2E06A2A07B72B00719601 /* ServiceAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAssembly.swift; sourceTree = "<group>"; };
+		2CB2E06C2A07DA1900719601 /* TitleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleGenerator.swift; sourceTree = "<group>"; };
 		2CCF1A312A058C430063A998 /* UIView .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView .swift"; sourceTree = "<group>"; };
+		2CEEC7532A07EB8300902753 /* BoardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardManager.swift; sourceTree = "<group>"; };
+		2CEEC7552A07EC2100902753 /* Move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Move.swift; sourceTree = "<group>"; };
+		2CEEC7572A07EC3900902753 /* WinningDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinningDirection.swift; sourceTree = "<group>"; };
+		2CEEC7592A07EC4900902753 /* BoardEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardEvent.swift; sourceTree = "<group>"; };
+		2CEEC75B2A07EC6100902753 /* GameSavingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSavingService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +126,8 @@
 		2C051E222A041EE3001E42BE /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				2C051E262A041F18001E42BE /* GameService */,
+				2CEEC7522A07EB7400902753 /* BoardManager */,
+				2CEEC7512A07EB6C00902753 /* GameSavingService */,
 				2C051E252A041F0D001E42BE /* DataBase */,
 			);
 			path = Service;
@@ -131,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				2C051E202A041C7C001E42BE /* Constants.swift */,
+				2CB2E06C2A07DA1900719601 /* TitleGenerator.swift */,
 				2C051E352A043078001E42BE /* MockData.swift */,
 			);
 			path = Support;
@@ -143,13 +159,6 @@
 				2C051E332A043036001E42BE /* CoreDataService.swift */,
 			);
 			path = DataBase;
-			sourceTree = "<group>";
-		};
-		2C051E262A041F18001E42BE /* GameService */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = GameService;
 			sourceTree = "<group>";
 		};
 		2C051E272A041F27001E42BE /* Games List Screen */ = {
@@ -215,6 +224,7 @@
 			children = (
 				2C70D5162A0591D800D89B4A /* GamesListAssembly.swift */,
 				2C70D5182A05928400D89B4A /* GameAssembly.swift */,
+				2CB2E06A2A07B72B00719601 /* ServiceAssembly.swift */,
 			);
 			path = Assembly;
 			sourceTree = "<group>";
@@ -258,6 +268,25 @@
 				2CB2E0642A07A69900719601 /* GameEvent.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		2CEEC7512A07EB6C00902753 /* GameSavingService */ = {
+			isa = PBXGroup;
+			children = (
+				2CEEC75B2A07EC6100902753 /* GameSavingService.swift */,
+			);
+			path = GameSavingService;
+			sourceTree = "<group>";
+		};
+		2CEEC7522A07EB7400902753 /* BoardManager */ = {
+			isa = PBXGroup;
+			children = (
+				2CEEC7532A07EB8300902753 /* BoardManager.swift */,
+				2CEEC7552A07EC2100902753 /* Move.swift */,
+				2CEEC7592A07EC4900902753 /* BoardEvent.swift */,
+				2CEEC7572A07EC3900902753 /* WinningDirection.swift */,
+			);
+			path = BoardManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -330,9 +359,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CEEC75C2A07EC6100902753 /* GameSavingService.swift in Sources */,
+				2CEEC7562A07EC2100902753 /* Move.swift in Sources */,
+				2CEEC7542A07EB8300902753 /* BoardManager.swift in Sources */,
 				2CB2E0582A06ED9600719601 /* GameViewModel.swift in Sources */,
+				2CEEC7582A07EC3900902753 /* WinningDirection.swift in Sources */,
 				2C051E212A041C7C001E42BE /* Constants.swift in Sources */,
+				2CB2E06D2A07DA1900719601 /* TitleGenerator.swift in Sources */,
 				2CB2E0652A07A69900719601 /* GameEvent.swift in Sources */,
+				2CEEC75A2A07EC4900902753 /* BoardEvent.swift in Sources */,
 				2C70D5142A05910200D89B4A /* BaseCoordinator.swift in Sources */,
 				2C70D5172A0591D800D89B4A /* GamesListAssembly.swift in Sources */,
 				2CB2E0672A07A94D00719601 /* GameCollectionCell.swift in Sources */,
@@ -345,6 +380,7 @@
 				2C051E0A2A041C0F001E42BE /* AppDelegate.swift in Sources */,
 				2CB2E0522A06D86A00719601 /* GamesTableCell.swift in Sources */,
 				2C051E2D2A042036001E42BE /* GamesListViewController.swift in Sources */,
+				2CB2E06B2A07B72B00719601 /* ServiceAssembly.swift in Sources */,
 				2C051E142A041C0F001E42BE /* Super_Tic_Tac_Toe.xcdatamodeld in Sources */,
 				2C051E342A043036001E42BE /* CoreDataService.swift in Sources */,
 				2C70D5122A0590D700D89B4A /* Coordinator.swift in Sources */,

@@ -68,6 +68,13 @@ final class GameViewController: UIViewController {
                 self?.configureCurrentPlayer(with: player)
             }
             .store(in: &subscriptions)
+        
+        viewModel.$cellModels
+            .receive(on: DispatchQueue.main)
+            .sink {[weak self] _ in
+                self?.collectionView.reloadData()
+            }
+            .store(in: &subscriptions)
     }
     
     private func configureCurrentPlayer(with player: Player) {
@@ -146,11 +153,16 @@ extension GameViewController: UICollectionViewDelegate {
 
 extension GameViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        9
+        viewModel.cellModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GameCollectionCell.identifier, for: indexPath)
+        guard let cell = cell as? GameCollectionCell else {
+            fatalError("Error with GameCollectionCell")
+        }
+        let playerImage = viewModel.cellModels[indexPath.row]?.getImage()
+        cell.setImage(playerImage)
         return cell
     }
 }
