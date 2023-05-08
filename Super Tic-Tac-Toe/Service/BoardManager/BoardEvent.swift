@@ -9,7 +9,7 @@ import Foundation
 
 enum BoardEvent {
     case newGame(String,[[Player?]])
-    case gameFetched([[Player?]], Player)
+    case gameFetched([[Player?]], Player, String)
     case placeIsTaken
     case gameFinished(GameResult)
     case updateWith([[Player?]])

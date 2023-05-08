@@ -22,6 +22,8 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
     private var subscriptions = Set<AnyCancellable>()
     
     private let coordinator: BaseCoordinatorDescription
+    #warning("TODO: DI")
+    private let gameSavingService: GameSavingServiceDescription = GameSavingService()
     
     init(coordinator: BaseCoordinatorDescription) {
         self.coordinator = coordinator
@@ -47,15 +49,48 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
     }
     
     private func fetchGames() {
-        gamesCellModels = MockData.cells
+        gameSavingService.fetchAllGames {[weak self] result in
+            switch result {
+            case .success(let models):
+                self?.toCellModels(models)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    #warning("TODO: add date and normal init")
+    private func toCellModels(_ models: [GameModel]) {
+        let cellModels = models.map { model in
+            GameCellModel(title: model.title, currentPlayer: model.lastMove?.player ?? .X, id: model.id, lastActivity: Date.now, isFinished: model.isFinished)
+        }
+        gamesCellModels = cellModels
     }
     
     private func createNewGame() {
-        
+        gameSavingService.createNew {[weak self] result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success(let newGameId):
+                DispatchQueue.main.async {
+                    self?.fetchGames()
+                    self?.coordinator.goToGame(with: newGameId)
+                }
+            }
+        }
     }
     
     private func deleteGame(at indexPath: IndexPath) {
+        let gameId = gamesCellModels[indexPath.row].id
         gamesCellModels.remove(at: indexPath.row)
+        gameSavingService.deleteGame(with: gameId) { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success(let something):
+                break
+            }
+        }
     }
     
     private func gameWasSelected(at indexPath: IndexPath) {

@@ -25,7 +25,7 @@ final class GameViewController: UIViewController {
     
     private var cellSize: CGFloat?
     
-    private var eventSubject = PassthroughSubject<GameEvent, Never>()
+    private var moveWasMadeSubject = PassthroughSubject<IndexPath, Never>()
     private let viewModel: GameViewModel
     private var subscriptions = Set<AnyCancellable>()
     
@@ -45,7 +45,6 @@ final class GameViewController: UIViewController {
         
         generalSetup()
         setupBinding()
-        eventSubject.send(.fetchGame)
     }
     
     override func viewDidLayoutSubviews() {
@@ -58,7 +57,7 @@ final class GameViewController: UIViewController {
     // MARK: - Binding
     
     private func setupBinding() {
-        viewModel.attachEventListener(with: eventSubject.eraseToAnyPublisher())
+        viewModel.attachEventListener(with: moveWasMadeSubject.eraseToAnyPublisher())
         viewModel.$gameTitle
             .receive(on: DispatchQueue.main)
             .map({ $0?.uppercased() })
@@ -96,7 +95,6 @@ final class GameViewController: UIViewController {
     // MARK: - UI
     
     private func generalSetup() {
-        title = "GAME"
         view.backgroundColor = Constant.Color.background
     }
     
@@ -233,7 +231,7 @@ final class GameViewController: UIViewController {
 
 extension GameViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        eventSubject.send(.moveWasMade(at: indexPath))
+        moveWasMadeSubject.send(indexPath)
     }
 }
 

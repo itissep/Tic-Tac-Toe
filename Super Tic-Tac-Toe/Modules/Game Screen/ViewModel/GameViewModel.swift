@@ -17,34 +17,28 @@ final class GameViewModel: NSObject {
     
     @Published var cellModels: [Player?] = []
     
-    private var eventPublisher: AnyPublisher<GameEvent, Never> = PassthroughSubject<GameEvent, Never>().eraseToAnyPublisher()
+    private var eventPublisher: AnyPublisher<IndexPath, Never> = PassthroughSubject<IndexPath, Never>().eraseToAnyPublisher()
     private var subscriptions = Set<AnyCancellable>()
     
     private let gameId: String
     private var isOn: Bool = true
-    private let boardManager: BoardManager
+    private let boardManager: GameManager
     
     
     init(gameId: String, gameService: GameSavingServiceDescription) {
         self.gameId = gameId
-        self.boardManager = BoardManager(gameSavingService: gameService, gameId: gameId)
+        self.boardManager = GameManager(gameSavingService: gameService, gameId: gameId)
         super.init()
         
         setupBinding()
         boardManager.fetch(with: gameId)
     }
     
-    func attachEventListener(with subject: AnyPublisher<GameEvent, Never>) {
+    func attachEventListener(with subject: AnyPublisher<IndexPath, Never>) {
         self.eventPublisher = subject
         eventPublisher
-            .sink { [weak self] event in
-                switch event {
-                case .fetchGame:
-                    #warning("TODO: figure out if needed")
-                    break
-                case .moveWasMade(at: let indexPath):
-                    self?.moveWasMade(at: indexPath)
-                }
+            .sink { [weak self] indexPath in
+                self?.moveWasMade(at: indexPath)
             }
             .store(in: &subscriptions)
     }
@@ -63,15 +57,15 @@ final class GameViewModel: NSObject {
                     break
                 case .placeIsTaken:
                     break
-                case .gameFetched(let board, let player):
+                case .gameFetched(let board, let player, let title):
                     self?.configureCells(with: board)
+                    self?.gameTitle = title
                     self?.currentPlayer = player
                 case .gameFinished(let result):
                     self?.isOn = false
                     self?.gameResult = result
                 case .changePlayer:
                     self?.currentPlayer = self?.currentPlayer?.enemy()
-                    
                 }
             }
             .store(in: &subscriptions)

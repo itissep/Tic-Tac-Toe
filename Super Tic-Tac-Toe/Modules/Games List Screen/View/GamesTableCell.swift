@@ -43,10 +43,10 @@ final class GameTableCell: UITableViewCell {
         currentPlayerView.layer.cornerRadius = 16
         currentPlayerView.layer.masksToBounds = true
         
-        titleLabel.font = UIFont.systemFont(ofSize: 35, weight: .black)
+        titleLabel.font = UIFont.systemFont(ofSize: 25, weight: .black)
         titleLabel.textColor = Constant.Color.accent
+        titleLabel.numberOfLines = 0
         
-        dateLabel.textColor = Constant.Color.gray
         dateLabel.textColor = Constant.Color.white
         
         NSLayoutConstraint.activate([
@@ -59,7 +59,7 @@ final class GameTableCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.hPadding),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: Constant.hPadding),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constant.hPadding),
             titleLabel.leadingAnchor.constraint(equalTo: currentPlayerView.trailingAnchor, constant: Constant.hPadding),
         ])
         

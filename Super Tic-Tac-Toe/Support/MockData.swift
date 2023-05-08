@@ -15,15 +15,97 @@ struct MockData {
 }
 
 struct GameModel {
+    let id: String
     let title: String
     let board: [[Player?]]
-    let lastMove: Move
+    let lastMove: Move?
     let isFinished: Bool
+    
+    #warning("TODO: remove this")
+    init(title: String, board: [[Player?]], lastMove: Move, isFinished: Bool) {
+        self.id = ""
+        self.title = title
+        self.board = board
+        self.lastMove = lastMove
+        self.isFinished = isFinished
+    }
+    
+    init(from modelDB: GameModelMO) {
+        self.id = modelDB.id ?? ""
+        self.title = modelDB.title ?? "SOME GAME"
+        self.isFinished = modelDB.isFinished
+        self.lastMove = Self.lastMove(from: modelDB)
+        #warning("TODO: add board")
+//        self.board = Self.board(from: modelDB.board)
+        self.board = Self.emptyBoard()
+    }
+    
+    static func lastMove(from data: GameModelMO) -> Move? {
+        let x = Int(data.lastX)
+        let y = Int(data.lastY)
+        if let player = Player.from(data.lastPlayer) {
+            return Move(location: (x, y), player: player)
+        } else {
+            return nil
+        }
+    }
+    
+    static func board(from data: [String]?) -> [[Player?]] {
+        guard let data else { return emptyBoard() }
+        var boardItems: [[Player?]] = []
+        
+        for i in 0...9 {
+            let x = i % 3
+            let y = Int(i/3)
+            boardItems[x][y] = Player.from(data[i])
+        }
+        return boardItems
+    }
+    
+    static func rawBoard(from board: [[Player?]]) -> [String] {
+        var rawBoard: [String] = []
+        for y in 0...2 {
+            for x in 0...2 {
+                let rawPlayer = board[x][y]?.rawValue ?? " "
+                rawBoard.append(rawPlayer)
+            }
+        }
+        return []
+    }
+    
+    static func emptyBoard() -> [[Player?]] {
+        var boardItems: [[Player?]] = Array(repeating: Array(repeating: nil, count: 3), count: 3)
+//        Array(repeating: Array(repeating: 0, count: 3), count: 3)
+//        for x in 0...2 {
+//            for y in 0...2 {
+//                boardItems[x][y] = nil
+//            }
+//        }
+        return boardItems
+    }
+    
+//    static func emptyRawBoard() -> [String] {
+//        var boardItems: [String] = Array(repeating: " ", count: 9)
+//        return boardItems
+//    }
+    
+    
 }
 
-enum Player {
-    case X
-    case O
+enum Player: String {
+    case X = "X"
+    case O = "O"
+    
+    static func from(_ string: String?) -> Player? {
+        switch string {
+        case "X":
+            return .X
+        case "O":
+            return .O
+        default:
+            return nil
+        }
+    }
     
     func enemy() -> Player {
         switch self {

@@ -45,12 +45,17 @@ final class GamesListViewController: UIViewController {
         ]
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        eventSubject.send(.update)
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         setupEmptyLabel()
-        setupTableView()
         setupButton()
+        setupTableView()
     }
     
     // MARK: - Binding
@@ -58,7 +63,8 @@ final class GamesListViewController: UIViewController {
     private func setupBinding() {
         viewModel.attachEventListener(with: eventSubject.eraseToAnyPublisher())
         viewModel.gamesCellsPublisher
-            .sink {[weak self] _ in
+            .sink {[weak self] cells in
+                self?.emptyLabel.isHidden = !cells.isEmpty
                 self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
@@ -88,22 +94,25 @@ final class GamesListViewController: UIViewController {
         view.addSubviews([tableView])
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: newGameButton.topAnchor, constant: -Constant.hPadding),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
     
     private func setupEmptyLabel() {
-        emptyLabel.text = "There is no games yet. /nGo ahead and create one!"
+        emptyLabel.text = "There is no games yet.\nGo ahead and create one!"
         emptyLabel.numberOfLines = 0
-        emptyLabel.font = Constant.Font.capture
-        emptyLabel.textColor = Constant.Color.gray
+        emptyLabel.font = UIFont.systemFont(ofSize: 17)
+        emptyLabel.textAlignment = .center
+        emptyLabel.textColor = Constant.Color.accent
+        
+        emptyLabel.layer.zPosition = 100
         
         view.addSubview(emptyLabel)
         emptyLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            emptyLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constant.hPadding),
+            emptyLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constant.hPadding),
             emptyLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constant.hPadding),
             emptyLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
