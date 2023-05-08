@@ -15,6 +15,7 @@ extension GameModelMO {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<GameModelMO> {
         return NSFetchRequest<GameModelMO>(entityName: "GameModelMO")
     }
+    @NSManaged public var lastActivity: Date?
     @NSManaged public var board: [String]?
     @NSManaged public var title: String?
     @NSManaged public var id: String?

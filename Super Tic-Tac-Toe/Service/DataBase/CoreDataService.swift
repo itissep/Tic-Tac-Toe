@@ -71,15 +71,6 @@ extension CoreDataManager: CoreDataManagerDescrption {
             try? viewContext.save()
         }
     }
-//    
-//    func deleteAll(request: NSFetchRequest<NSFetchRequestResult>) {
-//        let batchRequest = NSBatchDeleteRequest(fetchRequest: request)
-//        
-////        viewContext.performAndWait { [weak self] in
-////            _ = try? self?.viewContext.execute(batchRequest)
-////            try? self?.viewContext.save()
-////        }
-////    }
     
     func delete<T>(request: NSFetchRequest<T>) where T : NSManagedObject {
         
@@ -104,13 +95,7 @@ extension CoreDataManager: CoreDataManagerDescrption {
         })
     }
     
-//    func count<T>(request: NSFetchRequest<T>) -> Int where T : NSManagedObject {
-//        return (try? viewContext.count(for: request)) ?? 0
-//    }
-    
     func fetch<T>(request: NSFetchRequest<T>) -> [T] where T : NSManagedObject {
         return (try? viewContext.fetch(request)) ?? []
     }
-    
-    
 }

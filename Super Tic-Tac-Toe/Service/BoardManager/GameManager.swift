@@ -70,7 +70,6 @@ final class GameManager {
     private func configureGame(with gameModel: GameModel) {
         board = gameModel.board
         lastMove = gameModel.lastMove
-        print(lastMove?.player, "<---")
         getEmptyPlaces()
         
         let currentPlayer = gameModel.lastMove?.player ?? .X

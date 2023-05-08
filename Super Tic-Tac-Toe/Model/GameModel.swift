@@ -12,6 +12,7 @@ struct GameModel {
     let title: String
     let board: [[Player?]]
     let lastMove: Move?
+    let lastActivity: Date?
     let isFinished: Bool
 
     init(from modelDB: GameModelMO) {
@@ -20,6 +21,7 @@ struct GameModel {
         self.isFinished = modelDB.isFinished
         self.lastMove = Self.lastMove(from: modelDB)
         self.board = Self.board(from: modelDB.board)
+        self.lastActivity = modelDB.lastActivity
     }
     
     static func lastMove(from data: GameModelMO) -> Move? {

@@ -24,7 +24,7 @@ final class GameTableCell: UITableViewCell {
     }
     
     func configure(with cellModel: GameCellModel) {
-        let time = cellModel.lastActivity.timeToShow() ?? "maybe today"
+        let time = cellModel.lastActivity?.timeToShow() ?? "maybe today"
         titleLabel.text = cellModel.title.uppercased()
         dateLabel.text = time
         configureCurrentPlayer(with: cellModel.currentPlayer)

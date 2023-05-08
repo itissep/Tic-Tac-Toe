@@ -61,7 +61,18 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
     
     private func toCellModels(_ models: [GameModel]) {
         let cellModels = models.map { GameCellModel(from: $0) }
-        gamesCellModels = cellModels
+        gamesCellModels = sortByDate(cellModels)
+    }
+    
+    private func sortByDate(_ cells: [GameCellModel]) -> [GameCellModel] {
+        return cells.sorted { first, second in
+            guard
+                let firstDate = first.lastActivity,
+                let secondDate = second.lastActivity
+            else { return false }
+                  
+            return firstDate > secondDate
+        }
     }
     
     private func createNewGame() {

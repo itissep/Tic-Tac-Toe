@@ -38,6 +38,7 @@ final class GameSavingService: GameSavingServiceDescription {
                 modelMO.lastX = 0
                 modelMO.lastY = 0
                 modelMO.lastPlayer = " "
+                modelMO.lastActivity = Date.now
                 modelMO.isFinished = false
                 modelMO.board = Array(repeating: " ", count: 9)
             }
@@ -57,6 +58,7 @@ final class GameSavingService: GameSavingServiceDescription {
                 let fetchRequest = GameModelMO.fetchRequest()
                         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
                 self?.coreDataService.update(reqeust: fetchRequest, configurationBlock: { gameModel in
+                    gameModel?.lastActivity = Date.now
                     gameModel?.lastY = Int32(move.location.y)
                     gameModel?.lastX = Int32(move.location.x)
                     gameModel?.lastPlayer = move.player.rawValue
