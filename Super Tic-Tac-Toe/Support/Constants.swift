@@ -15,12 +15,6 @@ struct Constant {
         static let gray = UIColor(named: "GrayColor")?.withAlphaComponent(0.5)
     }
     
-    struct Font {
-        static let title = UIFont.systemFont(ofSize: 20)
-        static let common = UIFont.systemFont(ofSize: 15)
-        static let capture = UIFont.systemFont(ofSize: 13)
-    }
-    
     static let xIcon = UIImage(named: "Cross") ?? UIImage()
     static let oIcon = UIImage(named: "Circle") ?? UIImage()
 

@@ -22,4 +22,13 @@ final class GameCellModel: NSObject {
         self.lastActivity = lastActivity
         self.isFinished = isFinished
     }
+    
+    init(from model: GameModel) {
+        self.title = model.title
+        self.currentPlayer = model.lastMove?.player ?? .X
+        self.id = model.id
+        #warning("TODO: date to model")
+        self.lastActivity = Date.now
+        self.isFinished = model.isFinished
+    }
 }

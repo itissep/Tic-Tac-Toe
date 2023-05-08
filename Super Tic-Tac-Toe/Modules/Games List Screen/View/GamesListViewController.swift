@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+#warning("FIXIT: update thing")
 
 final class GamesListViewController: UIViewController {
     private lazy var tableView = UITableView()
@@ -150,6 +151,7 @@ final class GamesListViewController: UIViewController {
 
 extension GamesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath.row)
         eventSubject.send(.select(indexPath: indexPath))
     }
     

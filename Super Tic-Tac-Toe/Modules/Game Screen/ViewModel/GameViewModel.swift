@@ -49,10 +49,6 @@ final class GameViewModel: NSObject {
                 switch event {
                 case .updateWith(let newBoard):
                     self?.configureCells(with: newBoard)
-                case .newGame(let title, let board):
-                    self?.gameTitle = title
-                    self?.configureCells(with: board)
-                    self?.currentPlayer = .X
                 case .error:
                     break
                 case .placeIsTaken:

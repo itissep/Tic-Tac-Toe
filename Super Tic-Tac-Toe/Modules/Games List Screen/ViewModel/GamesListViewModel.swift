@@ -58,11 +58,9 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
             }
         }
     }
-    #warning("TODO: add date and normal init")
+    
     private func toCellModels(_ models: [GameModel]) {
-        let cellModels = models.map { model in
-            GameCellModel(title: model.title, currentPlayer: model.lastMove?.player ?? .X, id: model.id, lastActivity: Date.now, isFinished: model.isFinished)
-        }
+        let cellModels = models.map { GameCellModel(from: $0) }
         gamesCellModels = cellModels
     }
     
@@ -87,7 +85,7 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
             switch result {
             case .failure(let error):
                 print(error)
-            case .success(let something):
+            case .success(_):
                 break
             }
         }

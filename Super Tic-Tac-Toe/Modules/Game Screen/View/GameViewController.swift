@@ -156,13 +156,13 @@ final class GameViewController: UIViewController {
         gameResultView.layer.zPosition = 100
         view.addSubviews([gameResultView])
         
+        let side = view.frame.width - 2 * Constant.hPadding
+        
         NSLayoutConstraint.activate([
-            gameResultView.widthAnchor.constraint(equalTo: collectionView.widthAnchor),
-            gameResultView.heightAnchor.constraint(equalTo: collectionView.heightAnchor),
-            gameResultView.topAnchor.constraint(equalTo: collectionView.topAnchor),
-            gameResultView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
-            gameResultView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
-            gameResultView.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor),
+            gameResultView.widthAnchor.constraint(equalToConstant: side),
+            gameResultView.heightAnchor.constraint(equalToConstant: side),
+            gameResultView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
+            gameResultView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
         let player = viewModel.currentPlayer ?? .X

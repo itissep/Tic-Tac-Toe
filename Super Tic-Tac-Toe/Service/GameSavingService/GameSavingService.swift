@@ -30,22 +30,18 @@ final class GameSavingService: GameSavingServiceDescription {
         let id = UUID().uuidString
         let title = TitleGenerator.randomTitle()
         self.coreDataService.initIfNeeded {
-            self.coreDataService.create(entityName: "GameModelMO") { productMO in
-                guard let productMO = productMO as? GameModelMO else {
-                    return
-                }
+            self.coreDataService.create(entityName: "GameModelMO") { modelMO in
+                guard let modelMO = modelMO as? GameModelMO else { return }
 
-                productMO.title = title
-                productMO.id = id
-                productMO.lastX = 0
-                productMO.lastY = 0
-                productMO.lastPlayer = " "
-                productMO.isFinished = false
-                #warning("TODO: add board")
-//                productMO.board = Array(repeating: " ", count: 9)
-
-                completion(.success(id))
+                modelMO.title = title
+                modelMO.id = id
+                modelMO.lastX = 0
+                modelMO.lastY = 0
+                modelMO.lastPlayer = " "
+                modelMO.isFinished = false
+                modelMO.board = Array(repeating: " ", count: 9)
             }
+            completion(.success(id))
         } errorBlock: { error in
             debugPrint("[DEBUG] core data error \(error.localizedDescription)")
             completion(.failure(error))
@@ -57,53 +53,47 @@ final class GameSavingService: GameSavingServiceDescription {
                          board: [[Player?]],
                          _ completion: @escaping (Result<Void, Error>) -> Void) {
         
-//        self.coreDataService.initIfNeeded { [ weak self] in
-////            if let rawGameModels = self?.coreDataService.fetch(request: GameModelMO.fetchRequest()) {
-//                let fetchRequest = GameModelMO.fetchRequest()
-//                        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-////            if let rawGameModel = self?.coreDataService.fetch(request: fetchRequest).first {
-//                self?.coreDataService.update(reqeust: fetchRequest, configurationBlock: { gameModel in
-//                    gameModel?.lastY = Int32(move.location.y)
-//                    gameModel?.lastX = Int32(move.location.x)
-//                    gameModel?.lastPlayer = move.player.rawValue
-//                    #warning("TODO: add board")
-////                    gameModel?.board = GameModel.rawBoard(from: board)
-//                })
-////            }
-//            completion(.success(()))
-//        } errorBlock: { error in
-//            debugPrint("[DEBUG] core data error \(error.localizedDescription)")
-//            completion(.failure(error))
-//        }
-
-        
+        self.coreDataService.initIfNeeded { [ weak self] in
+                let fetchRequest = GameModelMO.fetchRequest()
+                        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+                self?.coreDataService.update(reqeust: fetchRequest, configurationBlock: { gameModel in
+                    gameModel?.lastY = Int32(move.location.y)
+                    gameModel?.lastX = Int32(move.location.x)
+                    gameModel?.lastPlayer = move.player.rawValue
+                    gameModel?.board = GameModel.rawBoard(from: board)
+                })
+            completion(.success(()))
+        } errorBlock: { error in
+            debugPrint("[DEBUG] core data error \(error.localizedDescription)")
+            completion(.failure(error))
+        }
     }
     
     func fetchGame(withId id: String, _ completion: @escaping (Result<GameModel, Error>) -> Void) {
-//        coreDataService.initIfNeeded { [weak self] in
-//            guard let self else { return }
-//
-//            let request = GameModelMO.fetchRequest()
-//            let productMO = self.coreDataService.fetch(request: request).first
-//
-//            guard let productMO else { return }
-//            let product = GameModel(from: productMO)
-//            completion(.success(product))
-//
-//        } errorBlock: { error in
-//            completion(.failure(error))
-//        }
+        coreDataService.initIfNeeded { [weak self] in
+            guard let self else { return }
+
+            let request = GameModelMO.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            let modelMO = self.coreDataService.fetch(request: request).first
+
+            guard let modelMO else { return }
+            let gameModel = GameModel(from: modelMO)
+            completion(.success(gameModel))
+
+        } errorBlock: { error in
+            completion(.failure(error))
+        }
 
     }
-    #warning("TODO: raname")
+
     func fetchAllGames( _ completion: @escaping (Result<[GameModel], Error>) -> Void) {
         coreDataService.initIfNeeded { [weak self] in
             let request = GameModelMO.fetchRequest()
-            let channelsEntities = self?.coreDataService.fetch(request: request)
-            let channelModels = channelsEntities?.map({ GameModel(from: $0) }) ?? []
-            completion(.success(channelModels))
+            let gamesEntities = self?.coreDataService.fetch(request: request)
+            let gamesModels = gamesEntities?.map({ GameModel(from: $0) }) ?? []
+            completion(.success(gamesModels))
         } errorBlock: { error in
-            print(error)
             completion(.failure(error))
         }
     }
@@ -116,7 +106,6 @@ final class GameSavingService: GameSavingServiceDescription {
             fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             self.coreDataService.delete(request: fetchRequest)
             completion(.success(()))
-            
         } errorBlock: { error in
             completion(.failure(error))
         }

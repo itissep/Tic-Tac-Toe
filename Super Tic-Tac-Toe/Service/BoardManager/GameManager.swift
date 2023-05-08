@@ -37,10 +37,8 @@ final class GameManager {
             }
         }
         self.board = boardItems
-        
-        let title = TitleGenerator.randomTitle()
-        let id = UUID().uuidString
-        self.id = id
+
+        self.id = ""
 //        gameSavingService.createNew(withId: id, withTitle: title)
 //        eventPublisher.send(.newGame(title, boardItems))
     }
@@ -66,22 +64,18 @@ final class GameManager {
         guard isEmpty(at: newMove.location) else { return }
         placeMove(newMove)
         
-        if let winningDerection = isWinningMove() {
-            eventPublisher.send(.gameFinished(winningDerection))
-        } else if emptyPlaces == 0 {
-            eventPublisher.send(.gameFinished(.draw))
-        } else {
-            eventPublisher.send(.changePlayer)
-        }
+        checkForCompletion()
     }
     
     private func configureGame(with gameModel: GameModel) {
         board = gameModel.board
         lastMove = gameModel.lastMove
+        print(lastMove?.player, "<---")
         getEmptyPlaces()
         
-        let currentPlayer = gameModel.lastMove?.player.enemy() ?? .X
+        let currentPlayer = gameModel.lastMove?.player ?? .X
         eventPublisher.send(.gameFetched(gameModel.board, currentPlayer, gameModel.title))
+        checkForCompletion()
     }
     
     private func isEmpty(at location: (x: Int, y: Int)) -> Bool {
@@ -125,6 +119,16 @@ final class GameManager {
             }
         }
         emptyPlaces = count
+    }
+    
+    private func checkForCompletion() {
+        if let winningDerection = isWinningMove() {
+            eventPublisher.send(.gameFinished(winningDerection))
+        } else if emptyPlaces == 0 {
+            eventPublisher.send(.gameFinished(.draw))
+        } else {
+            eventPublisher.send(.changePlayer)
+        }
     }
     
     private func isWinningMove() -> GameResult? {
