@@ -7,12 +7,13 @@
 
 import UIKit
 import Combine
-#warning("FIXIT: update thing")
 
 final class GamesListViewController: UIViewController {
     private lazy var tableView = UITableView()
     private lazy var newGameButton = UIButton()
     private lazy var emptyLabel = UILabel()
+    
+    private var cellsNumber: Int = 0
     
     private var eventSubject = PassthroughSubject<GameListEvent, Never>()
     private var subscriptions = Set<AnyCancellable>()
@@ -44,19 +45,20 @@ final class GamesListViewController: UIViewController {
             .foregroundColor: Constant.Color.white ?? UIColor.white,
             .font: UIFont.systemFont(ofSize: 35, weight: .black)
         ]
+        
+        eventSubject.send(.update)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        eventSubject.send(.update)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         setupEmptyLabel()
-        setupButton()
         setupTableView()
+        setupButton()
     }
     
     // MARK: - Binding
@@ -66,6 +68,7 @@ final class GamesListViewController: UIViewController {
         viewModel.gamesCellsPublisher
             .sink {[weak self] cells in
                 self?.emptyLabel.isHidden = !cells.isEmpty
+                self?.cellsNumber = cells.count
                 self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
@@ -86,8 +89,7 @@ final class GamesListViewController: UIViewController {
         
         tableView.register(GameTableCell.self, forCellReuseIdentifier: GameTableCell.identifier)
         
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 150
+        tableView.estimatedRowHeight = 75 + Constant.hPadding
         
         tableView.backgroundColor = Constant.Color.background
         tableView.separatorStyle = .none
@@ -95,7 +97,7 @@ final class GamesListViewController: UIViewController {
         view.addSubviews([tableView])
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: newGameButton.topAnchor, constant: -Constant.hPadding),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
@@ -104,9 +106,9 @@ final class GamesListViewController: UIViewController {
     private func setupEmptyLabel() {
         emptyLabel.text = "There is no games yet.\nGo ahead and create one!"
         emptyLabel.numberOfLines = 0
-        emptyLabel.font = UIFont.systemFont(ofSize: 17)
+        emptyLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         emptyLabel.textAlignment = .center
-        emptyLabel.textColor = Constant.Color.accent
+        emptyLabel.textColor = Constant.Color.gray
         
         emptyLabel.layer.zPosition = 100
         
@@ -123,11 +125,12 @@ final class GamesListViewController: UIViewController {
         newGameButton.addTarget(self, action: #selector(newGameButtonPressed), for: .touchUpInside)
         
         newGameButton.setTitle("NEW GAME", for: .normal)
-        newGameButton.setTitleColor(Constant.Color.background, for: .normal)
+        newGameButton.setTitleColor(Constant.Color.white, for: .normal)
         
-        newGameButton.backgroundColor = Constant.Color.white
+        newGameButton.backgroundColor = Constant.Color.accent
         newGameButton.layer.cornerRadius = 16
         newGameButton.layer.masksToBounds = true
+        newGameButton.titleLabel?.font =  UIFont.systemFont(ofSize: 17, weight: .bold)
         
         view.addSubview(newGameButton)
         newGameButton.translatesAutoresizingMaskIntoConstraints = false
@@ -151,7 +154,6 @@ final class GamesListViewController: UIViewController {
 
 extension GamesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.row)
         eventSubject.send(.select(indexPath: indexPath))
     }
     
@@ -162,8 +164,16 @@ extension GamesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             eventSubject.send(.delete(indexPath: indexPath))
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        60 + Constant.hPadding
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        UIView()
     }
 }
 
@@ -171,7 +181,7 @@ extension GamesListViewController: UITableViewDelegate {
 
 extension GamesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.gamesCellModels.count
+        return cellsNumber
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

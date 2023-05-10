@@ -8,7 +8,7 @@
 import UIKit
 
 protocol GameAssemblyDescription {
-    func createModule(with gameId: String) -> UIViewController
+    func createModule(with gameId: String, title: String) -> UIViewController
 }
 
 final class GameAssembly: GameAssemblyDescription {
@@ -18,11 +18,11 @@ final class GameAssembly: GameAssemblyDescription {
         self.serviceAssembly = serviceAssembly
     }
     
-    func createModule(with gameId: String)
+    func createModule(with gameId: String, title: String)
     -> UIViewController {
         let gameService = serviceAssembly.gameService
         let viewModel = GameViewModel(gameId: gameId, gameService: gameService)
-        let viewController = GameViewController(viewModel: viewModel)
+        let viewController = GameViewController(viewModel: viewModel, title: title)
         return viewController
     }
 }

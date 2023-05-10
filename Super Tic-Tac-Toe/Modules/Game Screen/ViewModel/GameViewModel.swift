@@ -43,7 +43,7 @@ final class GameViewModel: NSObject {
             .store(in: &subscriptions)
     }
     
-    func setupBinding() {
+    private func setupBinding() {
         boardManager.eventPublisher
             .sink { [weak self] event in
                 switch event {

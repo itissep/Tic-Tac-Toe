@@ -42,11 +42,11 @@ final class GameSavingService: GameSavingServiceDescription {
                 modelMO.isFinished = false
                 modelMO.board = Array(repeating: " ", count: 9)
             }
-            completion(.success(id))
         } errorBlock: { error in
             debugPrint("[DEBUG] core data error \(error.localizedDescription)")
             completion(.failure(error))
         }
+        completion(.success(id))
     }
     
     func updateAfterMove(withId id: String,

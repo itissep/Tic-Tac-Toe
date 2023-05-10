@@ -17,7 +17,7 @@ final class GameCellModel: NSObject {
     
     init(from model: GameModel) {
         self.title = model.title
-        self.currentPlayer = model.lastMove?.player ?? .X
+        self.currentPlayer = model.lastMove?.player ?? .O
         self.id = model.id
         self.lastActivity = model.lastActivity
         self.isFinished = model.isFinished

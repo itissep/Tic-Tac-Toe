@@ -84,7 +84,7 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
             case .success(let newGameId):
                 DispatchQueue.main.async {
                     self?.fetchGames()
-                    self?.coordinator.goToGame(with: newGameId)
+                    self?.coordinator.goToGame(with: newGameId, title: "")
                 }
             }
         }
@@ -105,6 +105,8 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
     
     private func gameWasSelected(at indexPath: IndexPath) {
         let gameId = gamesCellModels[indexPath.row].id
-        coordinator.goToGame(with: gameId)
+        let gameTitle = gamesCellModels[indexPath.row].title
+
+        coordinator.goToGame(with: gameId, title: gameTitle)
     }
 }

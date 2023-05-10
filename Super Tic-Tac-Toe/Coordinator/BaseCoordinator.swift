@@ -8,7 +8,7 @@
 import UIKit
 
 protocol BaseCoordinatorDescription: Coordinator {
-    func goToGame(with id: String)
+    func goToGame(with id: String, title: String)
 }
 
 class BaseCoordinator: NSObject, BaseCoordinatorDescription {
@@ -32,8 +32,8 @@ class BaseCoordinator: NSObject, BaseCoordinatorDescription {
         goToGamesList()
     }
     
-    func goToGame(with gameId: String) {
-        let viewController = gameAssembly.createModule(with: gameId)
+    func goToGame(with gameId: String, title: String) {
+        let viewController = gameAssembly.createModule(with: gameId, title: title)
         navigationController.pushViewController(viewController, animated: true)
     }
     

@@ -43,22 +43,26 @@ final class GameTableCell: UITableViewCell {
         currentPlayerView.layer.cornerRadius = 16
         currentPlayerView.layer.masksToBounds = true
         
-        titleLabel.font = UIFont.systemFont(ofSize: 25, weight: .black)
+        titleLabel.font = UIFont.systemFont(ofSize: 23, weight: .black)
         titleLabel.textColor = Constant.Color.accent
         titleLabel.numberOfLines = 0
         
         dateLabel.textColor = Constant.Color.white
+        dateLabel.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        
+        let imageHeightAnchor = currentPlayerView.heightAnchor.constraint(equalToConstant: 75)
+        imageHeightAnchor.priority = .defaultHigh
         
         NSLayoutConstraint.activate([
             currentPlayerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constant.hPadding),
-            currentPlayerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.hPadding),
-            currentPlayerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constant.hPadding),
+            currentPlayerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.hPadding/2),
+            currentPlayerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constant.hPadding/2),
             currentPlayerView.widthAnchor.constraint(equalToConstant: 75),
-            currentPlayerView.heightAnchor.constraint(equalToConstant: 75)
+            imageHeightAnchor
         ])
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.hPadding),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.hPadding/2),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constant.hPadding),
             titleLabel.leadingAnchor.constraint(equalTo: currentPlayerView.trailingAnchor, constant: Constant.hPadding),
         ])

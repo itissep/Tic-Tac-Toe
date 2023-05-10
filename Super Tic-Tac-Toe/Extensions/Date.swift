@@ -9,7 +9,7 @@ import Foundation
 
 extension Date {
     func timeToShow() -> String? {
-        let format = self.isToday() ? "HH:mm" : "dd MMM"
+        let format = self.isToday() ? "HH:mm" : "d MMM"
         return self.dateAndTimetoString(format: format)
     }
     

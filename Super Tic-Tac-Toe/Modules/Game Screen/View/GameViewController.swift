@@ -31,9 +31,11 @@ final class GameViewController: UIViewController {
     
     // MARK: - Life Cycle
     
-    init(viewModel: GameViewModel) {
+    init(viewModel: GameViewModel, title: String) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        
+        self.title = title.uppercased()
     }
     
     required init?(coder: NSCoder) {
@@ -216,11 +218,12 @@ final class GameViewController: UIViewController {
     }
     
     private func getOffset(for number: Int) -> CGFloat {
+        let offset = (view.frame.width - 2 * Constant.hPadding) / 3
         switch number {
         case 0:
-            return -(cellSize ?? 0.0)
+            return -offset
         case 2:
-            return cellSize ?? 0.0
+            return offset
         default:
             return 0.0
         }
@@ -264,9 +267,8 @@ extension GameViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView,
                    layout collectionViewLayout: UICollectionViewLayout,
-                   sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let layout = collectionViewLayout as! UICollectionViewFlowLayout
-#warning("TODO: force unwrap!!!")
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return CGSize.zero }
         let widthPerItem = collectionView.frame.width / 3 - layout.minimumInteritemSpacing
         self.cellSize = widthPerItem
         return CGSize(width: widthPerItem, height: widthPerItem)
