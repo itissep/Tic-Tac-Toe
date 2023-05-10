@@ -20,18 +20,15 @@ final class GameViewModel: NSObject {
     private var eventPublisher: AnyPublisher<IndexPath, Never> = PassthroughSubject<IndexPath, Never>().eraseToAnyPublisher()
     private var subscriptions = Set<AnyCancellable>()
     
-    private let gameId: String
     private var isOn: Bool = true
-    private let boardManager: GameManager
+    private let boardManager: GameManagerDescription
     
-    
-    init(gameId: String, gameService: GameSavingServiceDescription) {
-        self.gameId = gameId
-        self.boardManager = GameManager(gameSavingService: gameService, gameId: gameId)
+    init(gameManager: GameManagerDescription) {
+        self.boardManager = gameManager
         super.init()
         
         setupBinding()
-        boardManager.fetch(with: gameId)
+        boardManager.fetch()
     }
     
     func attachEventListener(with subject: AnyPublisher<IndexPath, Never>) {
@@ -45,6 +42,7 @@ final class GameViewModel: NSObject {
     
     private func setupBinding() {
         boardManager.eventPublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] event in
                 switch event {
                 case .updateWith(let newBoard):

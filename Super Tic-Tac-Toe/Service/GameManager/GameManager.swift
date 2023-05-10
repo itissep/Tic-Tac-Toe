@@ -7,23 +7,26 @@
 
 import Foundation
 import Combine
-#warning("TODO: protocol for game manager")
+
 protocol GameManagerDescription {
     var eventPublisher: AnyPublisher<BoardEvent, Never> { get }
     
-    func fetch(with id: String)
+    func fetch()
     func moveWasMade(player: Player, indexPath: IndexPath)
 }
 
-final class GameManager {
+final class GameManager: GameManagerDescription {
     private var board: [[Player?]]?
     private var lastMove: Move?
     private var emptyPlaces: Int = 9
     
+    var eventPublisher: AnyPublisher<BoardEvent, Never> {
+        eventSubject.eraseToAnyPublisher()
+    }
+    private let eventSubject = PassthroughSubject<BoardEvent, Never>()
+    
     private let id: String
     private let gameSavingService: GameSavingServiceDescription
-    
-    let eventPublisher = PassthroughSubject<BoardEvent, Never>()
     
     init(gameSavingService: GameSavingServiceDescription) {
         self.gameSavingService = gameSavingService
@@ -35,32 +38,37 @@ final class GameManager {
             }
         }
         self.board = boardItems
-
         self.id = ""
     }
     
     init(gameSavingService: GameSavingServiceDescription, gameId: String) {
         self.gameSavingService = gameSavingService
         self.id = gameId
+        
     }
     
-    func fetch(with id: String) {
-        gameSavingService.fetchGame(withId: id) {[weak self] result in
-            switch result {
-            case .failure(_):
-                break
-            case .success(let gameModel):
-                self?.configureGame(with: gameModel)
+    func fetch() {
+        DispatchQueue.global().async {[weak self] in
+            guard let self else { return }
+            self.gameSavingService.fetchGame(withId: self.id) { result in
+                switch result {
+                case .failure(_):
+                    break
+                case .success(let gameModel):
+                    self.configureGame(with: gameModel)
+                }
             }
         }
     }
     
     func moveWasMade(player: Player, indexPath: IndexPath) {
-        let newMove = Move(location: location(for: indexPath), player: player)
-        guard isEmpty(at: newMove.location) else { return }
-        placeMove(newMove)
-        
-        checkForCompletion()
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            let newMove = Move(location: self.location(for: indexPath), player: player)
+            guard self.isEmpty(at: newMove.location) else { return }
+            self.placeMove(newMove)
+            self.checkForCompletion()
+        }
     }
     
     private func configureGame(with gameModel: GameModel) {
@@ -69,7 +77,7 @@ final class GameManager {
         getEmptyPlaces()
         
         let currentPlayer = gameModel.lastMove?.player ?? .X
-        eventPublisher.send(.gameFetched(gameModel.board, currentPlayer, gameModel.title))
+        eventSubject.send(.gameFetched(gameModel.board, currentPlayer, gameModel.title))
         checkForCompletion()
     }
     
@@ -98,9 +106,9 @@ final class GameManager {
         ) {[weak self] result in
             switch result {
             case .success(_):
-                self?.eventPublisher.send(.updateWith(board))
+                self?.eventSubject.send(.updateWith(board))
             case .failure(_):
-                self?.eventPublisher.send(.error)
+                self?.eventSubject.send(.error)
             }
         }
     }
@@ -117,18 +125,27 @@ final class GameManager {
     }
     
     private func checkForCompletion() {
-        if let winningDerection = isWinningMove() {
-            eventPublisher.send(.gameFinished(winningDerection))
-        } else if emptyPlaces == 0 {
-            eventPublisher.send(.gameFinished(.draw))
-        } else {
-            eventPublisher.send(.changePlayer)
+        checkBoard {[weak self] winningDerection in
+            let result: BoardEvent
+            if let winningDerection {
+                result = .gameFinished(winningDerection)
+            } else if self?.emptyPlaces == 0 {
+                result = .gameFinished(.draw)
+            } else {
+                result = .changePlayer
+            }
+            
+            self?.eventSubject.send(result)
         }
     }
     
-    private func isWinningMove() -> GameResult? {
-        let results = [checkColumn(), checkRow(), checkDiagonals()]
-        return results.first(where:{ $0 != nil }) ?? nil
+    private func checkBoard(_ completion: @escaping (GameResult?) -> Void) {
+            let results = [
+                checkColumn(),
+                checkRow(),
+                checkDiagonals()
+            ]
+            completion(results.first(where:{ $0 != nil }) ?? nil)
     }
     
     private func checkColumn() -> GameResult? {
@@ -137,8 +154,8 @@ final class GameManager {
         let x = lastMove.location.x
         if
             board[x][0] == player &&
-            board[x][1] == player &&
-            board[x][2] == player
+                board[x][1] == player &&
+                board[x][2] == player
         {
             return .column(x)
         } else {
@@ -152,8 +169,8 @@ final class GameManager {
         let y = lastMove.location.y
         if
             board[0][y] == player &&
-            board[1][y] == player &&
-            board[2][y] == player
+                board[1][y] == player &&
+                board[2][y] == player
         {
             return .row(y)
         } else {

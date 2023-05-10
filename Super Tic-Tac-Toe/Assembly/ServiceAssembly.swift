@@ -9,6 +9,7 @@ import Foundation
 
 protocol ServiceAssemblyDescription {
     var gameService: GameSavingServiceDescription { get }
+    func createNewGameManager(for id: String) -> GameManagerDescription
     
 }
 
@@ -23,5 +24,9 @@ final class ServiceAssembly: ServiceAssemblyDescription {
         
     private func createGameService() -> GameSavingServiceDescription {
         GameSavingService(coreDataService: coreDataService)
+    }
+    
+    func createNewGameManager(for id: String) -> GameManagerDescription {
+        return GameManager(gameSavingService: gameService, gameId: id)
     }
 }

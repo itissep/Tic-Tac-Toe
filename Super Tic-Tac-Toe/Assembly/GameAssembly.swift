@@ -20,8 +20,8 @@ final class GameAssembly: GameAssemblyDescription {
     
     func createModule(with gameId: String, title: String)
     -> UIViewController {
-        let gameService = serviceAssembly.gameService
-        let viewModel = GameViewModel(gameId: gameId, gameService: gameService)
+        let gameManager = serviceAssembly.createNewGameManager(for: gameId)
+        let viewModel = GameViewModel(gameManager: gameManager)
         let viewController = GameViewController(viewModel: viewModel, title: title)
         return viewController
     }
