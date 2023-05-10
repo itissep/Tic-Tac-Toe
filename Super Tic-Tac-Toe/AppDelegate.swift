@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let navController = UINavigationController()
         coordinator = BaseCoordinator(navigationController: navController,
-                                      gamesListAssembly: GamesListAssembly(),
+                                      gamesListAssembly: GamesListAssembly(serviceAssembly: serviceAssembly),
                                       gameAssembly: GameAssembly(serviceAssembly: serviceAssembly))
         coordinator?.start()
         

@@ -129,7 +129,7 @@
 		2C051E222A041EE3001E42BE /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				2CEEC7522A07EB7400902753 /* BoardManager */,
+				2CEEC7522A07EB7400902753 /* GameManager */,
 				2CEEC7512A07EB6C00902753 /* GameSavingService */,
 				2C051E252A041F0D001E42BE /* DataBase */,
 			);
@@ -289,7 +289,7 @@
 			path = GameSavingService;
 			sourceTree = "<group>";
 		};
-		2CEEC7522A07EB7400902753 /* BoardManager */ = {
+		2CEEC7522A07EB7400902753 /* GameManager */ = {
 			isa = PBXGroup;
 			children = (
 				2CEEC7532A07EB8300902753 /* GameManager.swift */,
@@ -297,7 +297,7 @@
 				2CEEC7592A07EC4900902753 /* BoardEvent.swift */,
 				2CEEC7572A07EC3900902753 /* GameResult.swift */,
 			);
-			path = BoardManager;
+			path = GameManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

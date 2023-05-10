@@ -22,11 +22,12 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
     private var subscriptions = Set<AnyCancellable>()
     
     private let coordinator: BaseCoordinatorDescription
-    #warning("TODO: DI")
-    private let gameSavingService: GameSavingServiceDescription = GameSavingService()
+    private let gameSavingService: GameSavingServiceDescription
     
-    init(coordinator: BaseCoordinatorDescription) {
+    init(coordinator: BaseCoordinatorDescription,
+         gameService: GameSavingServiceDescription) {
         self.coordinator = coordinator
+        self.gameSavingService = gameService
         super.init()
     }
     

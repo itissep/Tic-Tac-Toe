@@ -16,8 +16,6 @@ protocol GameManagerDescription {
 }
 
 final class GameManager {
-//    var eventPublisher: AnyPublisher<BoardEvent, Never>
-    
     private var board: [[Player?]]?
     private var lastMove: Move?
     private var emptyPlaces: Int = 9
@@ -39,8 +37,6 @@ final class GameManager {
         self.board = boardItems
 
         self.id = ""
-//        gameSavingService.createNew(withId: id, withTitle: title)
-//        eventPublisher.send(.newGame(title, boardItems))
     }
     
     init(gameSavingService: GameSavingServiceDescription, gameId: String) {

@@ -8,22 +8,20 @@
 import Foundation
 
 protocol ServiceAssemblyDescription {
-//    var coreDataService: CoreDataServiceDescrption { get }
     var gameService: GameSavingServiceDescription { get }
     
 }
 
 final class ServiceAssembly: ServiceAssemblyDescription {
-//    lazy var coreDataService: CoreDataServiceDescrption = {
-//            CoreDataService()
-//        }()
-//
-    #warning("TODO: add core data dependency")
+    lazy var coreDataService: CoreDataManagerDescrption = {
+        CoreDataManager.shared
+        }()
+    
     lazy var gameService: GameSavingServiceDescription = {
         createGameService()
     }()
         
     private func createGameService() -> GameSavingServiceDescription {
-        GameSavingService()
+        GameSavingService(coreDataService: coreDataService)
     }
 }

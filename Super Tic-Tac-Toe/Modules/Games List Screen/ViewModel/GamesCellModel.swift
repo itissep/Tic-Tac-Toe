@@ -19,7 +19,6 @@ final class GameCellModel: NSObject {
         self.title = model.title
         self.currentPlayer = model.lastMove?.player ?? .X
         self.id = model.id
-        #warning("TODO: date to model")
         self.lastActivity = model.lastActivity
         self.isFinished = model.isFinished
     }

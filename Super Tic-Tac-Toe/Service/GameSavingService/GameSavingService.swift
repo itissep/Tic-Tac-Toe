@@ -20,9 +20,9 @@ protocol GameSavingServiceDescription {
 }
 
 final class GameSavingService: GameSavingServiceDescription {
-#warning("TODO: move to DI")
-    private let coreDataService: CoreDataManagerDescrption = CoreDataManager.shared
-    init() {
+    private let coreDataService: CoreDataManagerDescrption
+    init(coreDataService: CoreDataManagerDescrption) {
+        self.coreDataService = coreDataService
         
     }
     

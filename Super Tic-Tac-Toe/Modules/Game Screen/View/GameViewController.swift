@@ -266,6 +266,7 @@ extension GameViewController: UICollectionViewDelegateFlowLayout {
                    layout collectionViewLayout: UICollectionViewLayout,
                    sizeForItemAt indexPath: IndexPath) -> CGSize {
         let layout = collectionViewLayout as! UICollectionViewFlowLayout
+#warning("TODO: force unwrap!!!")
         let widthPerItem = collectionView.frame.width / 3 - layout.minimumInteritemSpacing
         self.cellSize = widthPerItem
         return CGSize(width: widthPerItem, height: widthPerItem)
