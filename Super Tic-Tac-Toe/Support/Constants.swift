@@ -17,6 +17,7 @@ struct Constant {
     
     static let xIcon = UIImage(named: "Cross") ?? UIImage()
     static let oIcon = UIImage(named: "Circle") ?? UIImage()
+    static let drawIcon = UIImage(named: "Draw") ?? UIImage()
 
     static let hPadding: CGFloat = 16.0
 }

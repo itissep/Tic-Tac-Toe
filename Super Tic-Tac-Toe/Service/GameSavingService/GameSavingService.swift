@@ -9,11 +9,14 @@ import Foundation
 import Combine
 
 protocol GameSavingServiceDescription {
-    func createNew(_ completion: @escaping (Result<String, Error>) -> Void)
+    func createNew(_ completion: @escaping (Result<(id: String, title: String), Error>) -> Void)
     func updateAfterMove(withId id: String,
                          move: Move,
                          board: [[Player?]],
                          _ completion: @escaping (Result<Void, Error>) -> Void)
+    func gameFinished(withId id: String,
+                      withDraw isDraw: Bool,
+                      _ completion: @escaping (Result<Void, Error>) -> Void)
     func fetchGame(withId id: String, _ completion: @escaping (Result<GameModel, Error>) -> Void)
     func fetchAllGames( _ completion: @escaping (Result<[GameModel], Error>) -> Void)
     func deleteGame(with id: String,  _ completion: @escaping (Result<Void , Error>) -> Void)
@@ -26,24 +29,41 @@ final class GameSavingService: GameSavingServiceDescription {
         
     }
     
-    func createNew(_ completion: @escaping (Result<String, Error>) -> Void) {
+    func createNew(_ completion: @escaping (Result<(id: String, title: String), Error>) -> Void) {
         let id = UUID().uuidString
         let title = TitleGenerator.randomTitle()
         self.coreDataService.initIfNeeded {
             self.coreDataService.create(entityName: "GameModelMO") { modelMO in
-                                guard let modelMO = modelMO as? GameModelMO else { return }
+                guard let modelMO = modelMO as? GameModelMO else { return }
                 
-                                modelMO.title = title
-                                modelMO.id = id
-                                modelMO.lastX = 0
-                                modelMO.lastY = 0
-                                modelMO.lastPlayer = " "
-                                modelMO.lastActivity = Date.now
-                                modelMO.isFinished = false
-                                modelMO.board = Array(repeating: " ", count: 9)
+                modelMO.title = title
+                modelMO.id = id
+                modelMO.lastX = 0
+                modelMO.lastY = 0
+                modelMO.lastPlayer = " "
+                modelMO.lastActivity = Date.now
+                modelMO.isFinished = false
+                modelMO.board = Array(repeating: " ", count: 9)
             } afterCreating: {
-                completion(.success(id))
+                completion(.success((id, title)))
             }
+        } errorBlock: { error in
+            debugPrint("[DEBUG] core data error \(error.localizedDescription)")
+            completion(.failure(error))
+        }
+    }
+    
+    func gameFinished(withId id: String,
+                      withDraw isDraw: Bool,
+                      _ completion: @escaping (Result<Void, Error>) -> Void) {
+        self.coreDataService.initIfNeeded { [ weak self] in
+                let fetchRequest = GameModelMO.fetchRequest()
+                        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+                self?.coreDataService.update(reqeust: fetchRequest, configurationBlock: { gameModel in
+                    gameModel?.isFinished = true
+                    if isDraw { gameModel?.lastPlayer = " "}
+                })
+            completion(.success(()))
         } errorBlock: { error in
             debugPrint("[DEBUG] core data error \(error.localizedDescription)")
             completion(.failure(error))

@@ -11,13 +11,19 @@ import Combine
 protocol GamesListViewModelDescription {
     var gamesCellModels: [GameCellModel] { get }
     var gamesCellsPublisher: Published<[GameCellModel]>.Publisher { get }
+    var deleteResult: AnyPublisher<IndexPath, Never> { get }
+    
     func attachEventListener(with subject: AnyPublisher<GameListEvent, Never>)
 }
 
 final class GamesListViewModel: NSObject, GamesListViewModelDescription {
     var gamesCellsPublisher: Published<[GameCellModel]>.Publisher { $gamesCellModels }
     @Published var gamesCellModels: [GameCellModel] = []
+    var deleteResult: AnyPublisher<IndexPath, Never> {
+        deleteResultSubject.eraseToAnyPublisher()
+    }
     
+    private var deleteResultSubject = PassthroughSubject<IndexPath, Never>()
     private var eventPublisher: AnyPublisher<GameListEvent, Never> = PassthroughSubject<GameListEvent, Never>().eraseToAnyPublisher()
     private var subscriptions = Set<AnyCancellable>()
     
@@ -81,10 +87,10 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
             switch result {
             case .failure(let error):
                 print(error)
-            case .success(let newGameId):
+            case .success(let newGame):
                 DispatchQueue.main.async {
                     self?.fetchGames()
-                    self?.coordinator.goToGame(with: newGameId, title: "")
+                    self?.coordinator.goToGame(with: newGame.id, title: newGame.title)
                 }
             }
         }
@@ -93,12 +99,12 @@ final class GamesListViewModel: NSObject, GamesListViewModelDescription {
     private func deleteGame(at indexPath: IndexPath) {
         let gameId = gamesCellModels[indexPath.row].id
         gamesCellModels.remove(at: indexPath.row)
-        gameSavingService.deleteGame(with: gameId) { result in
+        gameSavingService.deleteGame(with: gameId) {[weak self] result in
             switch result {
             case .failure(let error):
                 print(error)
             case .success(_):
-                break
+                self?.deleteResultSubject.send(indexPath)
             }
         }
     }

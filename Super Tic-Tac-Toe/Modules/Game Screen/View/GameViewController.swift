@@ -60,11 +60,6 @@ final class GameViewController: UIViewController {
     
     private func setupBinding() {
         viewModel.attachEventListener(with: moveWasMadeSubject.eraseToAnyPublisher())
-        viewModel.$gameTitle
-            .receive(on: DispatchQueue.main)
-            .map({ $0?.uppercased() })
-            .assign(to: \.title, on: self)
-            .store(in: &subscriptions)
         
         viewModel.$currentPlayer
             .receive(on: DispatchQueue.main)
@@ -167,7 +162,7 @@ final class GameViewController: UIViewController {
             gameResultView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
-        let player = viewModel.currentPlayer ?? .X
+        let player = viewModel.currentPlayer ?? .O
         configureGameResultLabel(with: result, player: player)
     }
     

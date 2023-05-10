@@ -67,8 +67,20 @@ final class GamesListViewController: UIViewController {
         viewModel.attachEventListener(with: eventSubject.eraseToAnyPublisher())
         viewModel.gamesCellsPublisher
             .sink {[weak self] cells in
-                self?.emptyLabel.isHidden = !cells.isEmpty
-                self?.cellsNumber = cells.count
+                guard let self else { return }
+                self.emptyLabel.isHidden = !cells.isEmpty
+                if cells.count >= self.cellsNumber {
+                    self.cellsNumber = cells.count
+                    self.tableView.reloadData()
+                }
+            }
+            .store(in: &subscriptions)
+        
+        viewModel.deleteResult
+            .delay(for: 0.5, scheduler: RunLoop.main)
+            .sink { [weak self] indexPath in
+                self?.cellsNumber -= 1
+                self?.tableView.deleteRows(at: [indexPath], with: .bottom)
                 self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
@@ -164,12 +176,12 @@ extension GamesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             eventSubject.send(.delete(indexPath: indexPath))
-            tableView.deleteRows(at: [indexPath], with: .fade)
+
         }
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        60 + Constant.hPadding
+        tableView.numberOfSections-1 == section ? 60 + Constant.hPadding : 0
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -191,6 +203,7 @@ extension GamesListViewController: UITableViewDataSource {
         }
         let cellViewModel = viewModel.gamesCellModels[indexPath.row]
         cell.configure(with: cellViewModel)
+        print("reload")
         return cell
     }
 }

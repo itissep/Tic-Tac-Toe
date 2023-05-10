@@ -27,12 +27,21 @@ final class GameTableCell: UITableViewCell {
         let time = cellModel.lastActivity?.timeToShow() ?? "maybe today"
         titleLabel.text = cellModel.title.uppercased()
         dateLabel.text = time
-        configureCurrentPlayer(with: cellModel.currentPlayer)
+        configureCurrentPlayer(with: cellModel.currentPlayer, isFinished: cellModel.isFinished)
+        
+        if cellModel.isFinished { setupBorder(with: cellModel.currentPlayer) }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         currentPlayerView.imageView.image = nil
+        currentPlayerView.layer.borderWidth = 0
+    }
+    
+    private func setupBorder(with player: Player?) {
+        let color = player?.getColor() ?? Constant.Color.white
+        currentPlayerView.layer.borderWidth = 5
+        currentPlayerView.layer.borderColor = color?.cgColor
     }
     
     private func layout() {
@@ -74,8 +83,15 @@ final class GameTableCell: UITableViewCell {
         ])
     }
     
-    private func configureCurrentPlayer(with player: Player) {
-        let image = player.getImage()
+    private func configureCurrentPlayer(with player: Player?, isFinished: Bool) {
+        
+        let image: UIImage
+        if isFinished {
+            image = player?.getImage() ?? Constant.drawIcon
+        } else {
+            image = player?.enemy().getImage() ?? Player.O.getImage()
+        }
+        
         currentPlayerView.imageView.image = image
         currentPlayerView.imageView.contentMode = .scaleAspectFit
     }

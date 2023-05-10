@@ -10,14 +10,14 @@ import Foundation
 final class GameCellModel: NSObject {
     
     let title: String
-    let currentPlayer: Player
+    let currentPlayer: Player?
     let id: String
     let lastActivity: Date?
     let isFinished: Bool
     
     init(from model: GameModel) {
         self.title = model.title
-        self.currentPlayer = model.lastMove?.player ?? .O
+        self.currentPlayer = model.lastMove?.player
         self.id = model.id
         self.lastActivity = model.lastActivity
         self.isFinished = model.isFinished

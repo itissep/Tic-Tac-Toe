@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum BoardEvent {
-    case gameFetched([[Player?]], Player, String)
+enum BoardEvent: Equatable {
+    case gameFetched([[Player?]], Player)
     case placeIsTaken
     case gameFinished(GameResult)
     case updateWith([[Player?]])

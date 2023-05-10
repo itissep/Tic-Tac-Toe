@@ -77,7 +77,7 @@ final class GameManager: GameManagerDescription {
         getEmptyPlaces()
         
         let currentPlayer = gameModel.lastMove?.player ?? .X
-        eventSubject.send(.gameFetched(gameModel.board, currentPlayer, gameModel.title))
+        eventSubject.send(.gameFetched(gameModel.board, currentPlayer))
         checkForCompletion()
     }
     
@@ -126,16 +126,22 @@ final class GameManager: GameManagerDescription {
     
     private func checkForCompletion() {
         checkBoard {[weak self] winningDerection in
+            guard let self else { return }
+            var isDraw = false
             let result: BoardEvent
             if let winningDerection {
                 result = .gameFinished(winningDerection)
-            } else if self?.emptyPlaces == 0 {
+            } else if self.emptyPlaces == 0 {
+                isDraw = true
                 result = .gameFinished(.draw)
             } else {
                 result = .changePlayer
+                self.eventSubject.send(result)
+                return
             }
-            
-            self?.eventSubject.send(result)
+            self.gameSavingService.gameFinished(withId: self.id, withDraw: isDraw) { _ in
+                self.eventSubject.send(result)
+            }
         }
     }
     

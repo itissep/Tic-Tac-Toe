@@ -9,7 +9,6 @@ import Foundation
 import Combine
 
 final class GameViewModel: NSObject {
-    @Published var gameTitle: String?
     @Published var movesNumber: Int?
     @Published var board: [[Player?]]?
     @Published var currentPlayer: Player?
@@ -51,9 +50,8 @@ final class GameViewModel: NSObject {
                     break
                 case .placeIsTaken:
                     break
-                case .gameFetched(let board, let player, let title):
+                case .gameFetched(let board, let player):
                     self?.configureCells(with: board)
-                    self?.gameTitle = title
                     self?.currentPlayer = player
                 case .gameFinished(let result):
                     self?.isOn = false
