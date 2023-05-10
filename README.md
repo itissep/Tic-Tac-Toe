@@ -34,5 +34,5 @@
 
 ## Итог
 
-<image src="/images/entry-screen.png" caption="Экран со списком игр" width="184" height="400">
-<image src="/images/start-screen.png" caption="Экран игры" width="184" height="400">
+<image src="/images/games-list-screen.png" caption="Экран со списком игр" width="184" height="400">
+<image src="/images/game-screen.png" caption="Экран игры" width="184" height="400">
