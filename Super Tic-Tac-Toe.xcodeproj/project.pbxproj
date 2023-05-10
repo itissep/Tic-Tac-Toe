@@ -72,6 +72,7 @@
 		2CB2E0662A07A94D00719601 /* GameCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCollectionCell.swift; sourceTree = "<group>"; };
 		2CB2E06A2A07B72B00719601 /* ServiceAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAssembly.swift; sourceTree = "<group>"; };
 		2CB2E06C2A07DA1900719601 /* TitleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleGenerator.swift; sourceTree = "<group>"; };
+		2CCC66F72A0BD8830088CF05 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2CCF1A312A058C430063A998 /* UIView .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView .swift"; sourceTree = "<group>"; };
 		2CEEC7532A07EB8300902753 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
 		2CEEC7552A07EC2100902753 /* Move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Move.swift; sourceTree = "<group>"; };
@@ -94,6 +95,8 @@
 		2C051DFD2A041C0F001E42BE = {
 			isa = PBXGroup;
 			children = (
+				2CCC66F82A0BD8860088CF05 /* images */,
+				2CCC66F72A0BD8830088CF05 /* README.md */,
 				2C051E082A041C0F001E42BE /* Super Tic-Tac-Toe */,
 				2C051E072A041C0F001E42BE /* Products */,
 			);
@@ -279,6 +282,13 @@
 				2CB2E0642A07A69900719601 /* GameEvent.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		2CCC66F82A0BD8860088CF05 /* images */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = images;
 			sourceTree = "<group>";
 		};
 		2CEEC7512A07EB6C00902753 /* GameSavingService */ = {
@@ -542,6 +552,7 @@
 				DEVELOPMENT_TEAM = 35953V9L7K;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Super Tic-Tac-Toe/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Tic-Tac-Toe";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
@@ -574,6 +585,7 @@
 				DEVELOPMENT_TEAM = 35953V9L7K;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Super Tic-Tac-Toe/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Tic-Tac-Toe";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;

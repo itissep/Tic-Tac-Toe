@@ -8,12 +8,10 @@
 import Foundation
 
 struct TitleGenerator {
-    static let adjectives = ["heroic", "fearless", "epic", "fabulous", "unreal"]
-    static let nouns = ["struggle", "conflict", "battle", "contest", "match", "round"]
+    static let adjectives = ["heroic", "fearless", "epic", "fabulous", "unreal", "cool", "super"]
     
     static func randomTitle() -> String {
         let abjective = adjectives.randomElement() ?? ""
-        let noun = nouns.randomElement() ?? ""
-        return "\(abjective) \(noun)"
+        return "\(abjective) GAME"
     }
 }
