@@ -11,7 +11,7 @@ import CoreData
 protocol CoreDataManagerDescrption {
     func fetch<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T]
     
-    func create<T: NSManagedObject>(entityName: String, configurationBlock: @escaping (T?) -> Void)
+    func create<T: NSManagedObject>(entityName: String, configurationBlock: @escaping (T?) -> Void, afterCreating completion: @escaping () -> Void)
     
     func delete<T: NSManagedObject>(request: NSFetchRequest<T>)
     
@@ -83,7 +83,7 @@ extension CoreDataManager: CoreDataManagerDescrption {
         }
     }
     
-    func create<T>(entityName: String, configurationBlock: @escaping (T?) -> Void) where T : NSManagedObject {
+    func create<T>(entityName: String, configurationBlock: @escaping (T?) -> Void, afterCreating completion: @escaping () -> Void) where T : NSManagedObject {
         
         container.performBackgroundTask({ backgroundContext in
             let object = NSEntityDescription.insertNewObject(forEntityName: entityName,
@@ -92,6 +92,7 @@ extension CoreDataManager: CoreDataManagerDescrption {
             configurationBlock(object)
             
             try? backgroundContext.save()
+            completion()
         })
     }
     

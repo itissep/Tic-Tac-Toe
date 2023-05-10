@@ -31,22 +31,23 @@ final class GameSavingService: GameSavingServiceDescription {
         let title = TitleGenerator.randomTitle()
         self.coreDataService.initIfNeeded {
             self.coreDataService.create(entityName: "GameModelMO") { modelMO in
-                guard let modelMO = modelMO as? GameModelMO else { return }
-
-                modelMO.title = title
-                modelMO.id = id
-                modelMO.lastX = 0
-                modelMO.lastY = 0
-                modelMO.lastPlayer = " "
-                modelMO.lastActivity = Date.now
-                modelMO.isFinished = false
-                modelMO.board = Array(repeating: " ", count: 9)
+                                guard let modelMO = modelMO as? GameModelMO else { return }
+                
+                                modelMO.title = title
+                                modelMO.id = id
+                                modelMO.lastX = 0
+                                modelMO.lastY = 0
+                                modelMO.lastPlayer = " "
+                                modelMO.lastActivity = Date.now
+                                modelMO.isFinished = false
+                                modelMO.board = Array(repeating: " ", count: 9)
+            } afterCreating: {
+                completion(.success(id))
             }
         } errorBlock: { error in
             debugPrint("[DEBUG] core data error \(error.localizedDescription)")
             completion(.failure(error))
         }
-        completion(.success(id))
     }
     
     func updateAfterMove(withId id: String,
